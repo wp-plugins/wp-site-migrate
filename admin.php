@@ -87,7 +87,7 @@ if ( !function_exists('bvMigrate') ) :
 <form action="https://webapp.blogvault.net/home/api_signup" style="padding:0 2% 2em 1%;" method="post" name="signup">
 <h1>Migrate Site</h1>
 	<input type="hidden" name="bvsrc" value="wpplugin" />
-	<input type="hidden" name="migrate" value="true" />
+	<input type="hidden" name="migrate" value="wpengine" />
 	<input type="hidden" name="loc" value="MIGRATE3FREE" />
 	<input type="hidden" name="type" value="sftp" />
 	<input type="hidden" name="url" value="<?php echo $blogvault->wpurl(); ?>" />
