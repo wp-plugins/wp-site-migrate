@@ -101,13 +101,19 @@ if ( !function_exists('bvMigrate') ) :
       		<input type="text" id="email" name="email" value="<?php echo get_option('admin_email');?>">
 				</div>
 			</div>
-      <label class="control-label" for="input01">
-        FTP Server Address
+			<label class="control-label" for="input02">Destination Site URL</label>
+			<div class="control-group">
+				<div class="controls">
+					<input type="text" class="input-large" name="newurl" placeholder="http://example.wpengine.com">
+				</div>
+			</div>
+      <label class="control-label" for="inputip">
+        FTP Host
       	<span style="color:#08C">(of the destination server)</span>
       </label>
       <div class="control-group">
         <div class="controls">
-          <input type="text" class="input-large" placeholder="eg. akshatc.wpengine.com" name="address">
+          <input type="text" class="input-large" placeholder="eg. 1.2.3.4" name="address">
           <p class="help-block"></p>
         </div>
       </div>
