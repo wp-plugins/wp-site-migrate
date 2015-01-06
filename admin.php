@@ -83,6 +83,10 @@ endif;
 if ( !function_exists('bvMigrate') ) :
 	function bvMigrate() {
 		global $blogvault, $bvNotice;
+		$_error = NULL;
+		if (isset($_GET['error'])) {
+			$_error = $_GET['error'];
+		}
 ?>
 <form action="https://webapp.blogvault.net/home/api_signup" style="padding:0 2% 2em 1%;" method="post" name="signup">
 <h1>Migrate Site</h1>
@@ -94,6 +98,17 @@ if ( !function_exists('bvMigrate') ) :
 	<input type="hidden" name="secret" value="<?php echo $blogvault->getOption('bvSecretKey'); ?>">
 	<input type='hidden' name='bvnonce' value='<?php echo wp_create_nonce("bvnonce") ?>'>
 	<div class="row-fluid">
+		<div style="color:red; font-weight: bold;" align="left">
+<?php if ($_error == "email") { ?>
+				There is already an account with this email.
+<?php } else if ($_error == "blog") { ?>
+				Could not create an account. Please contact <a href="http://blogvault.net/contact/">blogVault Support</a>
+<?php } else if ($_error == "custom") {
+	$_message = base64_decode($_GET['message']);
+?>
+			<?php echo $_message; ?>
+<?php } ?>
+		</div>
 		<div class="span5" style="border-right: 1px solid #EEE">
 			<label id='label_email'>Email</label>
 			 <div class="control-group">
