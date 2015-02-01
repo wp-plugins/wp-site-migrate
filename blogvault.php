@@ -5,7 +5,7 @@ Plugin URI: http://blogvault.net/
 Description: The easiest way to migrate your site to WPEngine
 Author: Akshat
 Author URI: http://blogvault.net/
-Version: 1.15
+Version: 1.16
  */
 
 /*  Copyright YEAR  PLUGIN_AUTHOR_NAME  (email : PLUGIN AUTHOR EMAIL)
@@ -28,7 +28,7 @@ Version: 1.15
 global $bvVersion;
 global $blogvault;
 global $bvDynamicEvents;
-$bvVersion = '1.15';
+$bvVersion = '1.16';
 
 if (is_admin())
 	require_once dirname( __FILE__ ) . '/admin.php';
@@ -56,9 +56,13 @@ if (!class_exists('BVSecurity')) {
 	$bvsecurity = BVSecurity::init();
 }
 
+add_action('bvdailyping_daily_event', array($blogvault, 'dailyping'));
 if ( !function_exists('bvActivateHandler') ) :
 	function bvActivateHandler() {
 		global $blogvault;
+		if (!wp_next_scheduled('bvdailyping_daily_event')) {
+			wp_schedule_event(time(), 'daily', 'bvdailyping_daily_event');
+		}
 		##BVKEYSLOCATE##
 		if ($blogvault->getOption('bvPublic')) {
 			$blogvault->updateOption('bvLastSendTime', time());
@@ -76,6 +80,7 @@ endif;
 if ( !function_exists('bvDeactivateHandler') ) :
 	function bvDeactivateHandler() {
 		global $blogvault;
+		wp_clear_scheduled_hook('bvdailyping_daily_event');
 		$body = array();
 		$body['wpurl'] = urlencode($blogvault->wpurl());
 		$body['url2'] = urlencode(get_bloginfo('wpurl'));
@@ -116,6 +121,7 @@ if ((array_key_exists('apipage', $_REQUEST)) && stristr($_REQUEST['apipage'], 'b
 		header('Content-Transfer-Encoding: binary');
 	}
 	$blogvault->addStatus("signature", "Blogvault API");
+	$blogvault->addStatus("bvVersion", $bvVersion);
 	if (!$blogvault->authenticateControlRequest()) {
 		$blogvault->addStatus("statusmsg", 'failed authentication');
 		$blogvault->addStatus("public", substr($blogvault->getOption('bvPublic'), 0, 6));
@@ -127,17 +133,12 @@ if ((array_key_exists('apipage', $_REQUEST)) && stristr($_REQUEST['apipage'], 'b
 		$_REQUEST = array_map( 'stripslashes_deep', $_REQUEST );
 	}
 	if (array_key_exists('b64', $_REQUEST)) {
-		if (array_key_exists('files', $_REQUEST)) {
-			$_REQUEST['files'] = array_map('base64_decode', $_REQUEST['files']);
-		}
-		if (array_key_exists('names', $_REQUEST)) {
-			$_REQUEST['names'] = array_map('base64_decode', $_REQUEST['names']);
-		}
-		if (array_key_exists('initdir', $_REQUEST)) {
-			$_REQUEST['initdir'] = base64_decode($_REQUEST['initdir']);
-		}
-		if (array_key_exists('filter', $_REQUEST)) {
-			$_REQUEST['filter'] = base64_decode($_REQUEST['filter']);
+		foreach($_REQUEST['b64'] as $key) {
+			if (is_array($_REQUEST[$key])) {
+				$_REQUEST[$key] = array_map('base64_decode', $_REQUEST[$key]);
+			} else {
+				$_REQUEST[$key] = base64_decode($_REQUEST[$key]);
+			}
 		}
 	}
 	if (array_key_exists('memset', $_REQUEST)) {
@@ -369,6 +370,18 @@ if ((array_key_exists('apipage', $_REQUEST)) && stristr($_REQUEST['apipage'], 'b
 	case "tablekeys":
 		$table = urldecode($_REQUEST['table']);
 		$blogvault->tableKeys($table);
+		break;
+	case "gettablecreate":
+		$tname = $_REQUEST['table'];
+		$blogvault->addStatus("create", $blogvault->tableCreate($tname));
+		break;
+	case "getrowscount":
+		$tname = $_REQUEST['table'];
+		$blogvault->addStatus("count", $blogvault->rowsCount($tname));
+		break;
+	case "updatedailyping":
+		$value = $_REQUEST['value'];
+		$blogvault->addStatus("bvDailyPing", $blogvault->updateDailyPing($value));
 		break;
 	default:
 		$blogvault->addStatus("statusmsg", "Bad Command");

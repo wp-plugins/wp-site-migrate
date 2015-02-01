@@ -43,8 +43,8 @@ class BlogVault {
 		$secret = urlencode($this->getOption('bvSecretKey'));
 		$time = urlencode($time);
 		$version = urlencode($bvVersion);
-		$sig = md5($public.$secret.$time.$version);
-		return $baseurl.$method."?sig=".$sig."&bvTime=".$time."&bvPublic=".$public."&bvVersion=".$version;
+		$sig = sha1($public.$secret.$time.$version);
+		return $baseurl.$method."?sha1=1&sig=".$sig."&bvTime=".$time."&bvPublic=".$public."&bvVersion=".$version;
 	}
 
 	function randString($length) {
@@ -266,12 +266,8 @@ class BlogVault {
 	/* This informs the server about the activation */
 	function activate() {
 		global $wpdb;
-		global $bvVersion;
 		global $blogvault;
-		$body = array();
-		$body['wpurl'] = urlencode($blogvault->wpurl());
-		$body['url2'] = urlencode(get_bloginfo('wpurl'));
-		$body['abspath'] = urlencode(ABSPATH);
+		$body = $blogvault->basicInfo();
 		if (defined('DB_CHARSET'))
 			$body['dbcharset'] = urlencode(DB_CHARSET);
 		if ($wpdb->base_prefix) {
@@ -279,10 +275,7 @@ class BlogVault {
 		} else {
 			$body['dbprefix'] = urlencode($wpdb->prefix);
 		}
-		$body['bvversion'] = urlencode($bvVersion);
-		$body['serverip'] = urlencode($_SERVER['SERVER_ADDR']);
-		$body['dynsync'] = urlencode($blogvault->getOption('bvDynSyncActive'));
-		$body['woodyn'] = urlencode($blogvault->getOption('bvWooDynSync'));
+
 		if (extension_loaded('openssl')) {
 			$body['openssl'] = "1";
 		}
@@ -307,6 +300,44 @@ class BlogVault {
 		return true;
 	}
 
+	/* This informs the presence of the plugin in site everyday */
+	function dailyping() {
+		global $blogvault;
+		if (!$blogvault->getOption('bvPublic') || $blogvault->getOption('bvDailyPing') == "no") {
+			return false;
+		}
+		$body = $blogvault->basicInfo();
+		$clt = new BVHttpClient();
+		if (strlen($clt->errormsg) > 0) {
+			return false;
+		}
+		$resp = $clt->post($blogvault->getUrl("dailyping"), array(), $body);
+		if (array_key_exists('status', $resp) && ($resp['status'] != '200')) {
+			return false;
+		}
+		return true;
+	}
+
+	function updateDailyPing($value) {
+		if(update_option("bvDailyPing", $value)) {
+			return $value;
+		}
+		return "failed";
+	}
+
+	function basicInfo() {
+		global $bvVersion;
+		global $blogvault;
+		$body = array();
+		$body['wpurl'] = urlencode($blogvault->wpurl());
+		$body['url2'] = urlencode(get_bloginfo('wpurl'));
+		$body['bvversion'] = urlencode($bvVersion);
+		$body['serverip'] = urlencode($_SERVER['SERVER_ADDR']);
+		$body['abspath'] = urlencode(ABSPATH);
+		$body['dynsync'] = urlencode($blogvault->getOption('bvDynSyncActive'));
+		$body['woodyn'] = urlencode($blogvault->getOption('bvWooDynSync'));
+		return $body;
+	}
 	function listTables() {
 		global $wpdb;
 
@@ -348,21 +379,32 @@ class BlogVault {
 		return true;
 	}
 
+	function tableCreate($tbl) {
+		global $wpdb;
+		$str = "SHOW CREATE TABLE " . $tbl . ";";
+		return $wpdb->get_var($str, 1);
+	}
+
+	function rowsCount($tbl) {
+		global $wpdb;
+		$count = $wpdb->get_var("SELECT COUNT(*) FROM ".$tbl);
+		return intval($count);
+	}
 	function tableInfo($tbl, $offset = 0, $limit = 0, $bsize = 512, $filter = "") {
 		global $wpdb;
 
+		$data = array();
 		$clt = new BVHttpClient();
 		if (strlen($clt->errormsg) > 0) {
 			return false;
 		}
 		$clt->uploadChunkedFile($this->getUrl("tableinfo")."&offset=".$offset, "tablename", $tbl);
-		$str = "SHOW CREATE TABLE " . $tbl . ";";
-		$create = $wpdb->get_var($str, 1);
-		$rows_count = $wpdb->get_var("SELECT COUNT(*) FROM ".$tbl);
-		$data = array();
-		$data["create"] = $create;
-		$data["count"] = intval($rows_count);
-		$data["encoding"] = mysql_client_encoding();
+		if (array_key_exists('create', $_REQUEST)) {
+			$data["create"] = $this->tableCreate($tbl);
+		}
+		if (array_key_exists('count', $_REQUEST)) {
+			$data["count"] = $this->rowsCount($tbl);
+		}
 		$str = serialize($data);
 		$clt->newChunkedPart(strlen($str).":".$str);
 
@@ -467,8 +509,14 @@ class BlogVault {
 		if ($time < intval($this->getOption('bvLastRecvTime')) - 300) {
 			return false;
 		}
+		if (array_key_exists('sha1', $_REQUEST)) {
+			if (sha1($method.$secret.$time.$version) != $sig) {
+				return false;
+			}
+		} else {
 		if (md5($method.$secret.$time.$version) != $sig) {
 			return false;
+			}
 		}
 		$this->updateOption('bvLastRecvTime', $time);
 		return true;
