@@ -88,7 +88,7 @@ if ( !function_exists('bvMigrate') ) :
 			$_error = $_GET['error'];
 		}
 ?>
-<form action="https://webapp.blogvault.net/home/api_signup" style="padding:0 2% 2em 1%;" method="post" name="signup">
+<form rel="canonical" action="https://webapp.blogvault.net/home/api_signup" style="padding:0 2% 2em 1%;" method="post" name="signup">
 <h1>Migrate Site</h1>
 	<input type="hidden" name="bvsrc" value="wpplugin" />
 	<input type="hidden" name="migrate" value="wpengine" />
@@ -215,7 +215,7 @@ if ( !function_exists('bvKeyConf') ) :
 <?php } ?>
 			</div>
 
-			<form action="https://webapp.blogvault.net/home/api_signup" style="padding:0 2% 2em 1%;" method="post" name="signup">
+			<form rel="canonical" action="https://webapp.blogvault.net/home/api_signup" style="padding:0 2% 2em 1%;" method="post" name="signup">
 				<input type="hidden" name="bvsrc" value="wpplugin" />
 				<input type="hidden" name="url" value="<?php echo $blogvault->wpurl(); ?>" />
 				<input type="hidden" name="secret" value="<?php echo $blogvault->getOption('bvSecretKey'); ?>">
@@ -306,7 +306,7 @@ if ( !function_exists('bvKeyConf') ) :
 			<div>
 			  <font size="3">Login to your blogVault Account!</font>
 			</div>
-			<form action="https://webapp.blogvault.net/home/api_signin" style="padding:0 2% 2em 1%;" method="post" name="signin">
+			<form rel="canonical" action="https://webapp.blogvault.net/home/api_signin" style="padding:0 2% 2em 1%;" method="post" name="signin">
 				<input type="hidden" name="bvsrc" value="wpplugin" />
 				<input type="hidden" name="url" value="<?php echo $blogvault->wpurl(); ?>">
 				<input type="hidden" name="secret" value="<?php echo $blogvault->getOption('bvSecretKey'); ?>">
