@@ -108,7 +108,7 @@ if ( !function_exists('bvWpEMigrate') ) :
 	echo '<div class="error" style="padding-bottom:0.5%;"><p>There is already an account with this email.</p></div>';
 } else if ($_error == "blog") {
 	echo '<div class="error" style="padding-bottom:0.5%;"><p>Could not create an account. Please contact <a href="http://blogvault.net/contact/">blogVault Support</a></p></div>';
-} else if ($_error == "custom") {
+} else if (($_error == "custom") && isset($_REQUEST['bvnonce']) && wp_verify_nonce($_REQUEST['bvnonce'], "bvnonce")) {
 	echo '<div class="error" style="padding-bottom:0.5%;"><p>'.base64_decode($_GET['message']).'</p></div>';
 }
 ?>
