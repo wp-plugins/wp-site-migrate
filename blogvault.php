@@ -97,16 +97,6 @@ if ( !function_exists('bvDeactivateHandler') ) :
 	register_deactivation_hook(__FILE__, 'bvDeactivateHandler');
 endif;
 
-if (!function_exists('bvFooterHandler')) :
-	function bvFooterHandler() {
-		echo '<div style="max-width:150px; margin:0 auto; text-align: center;"><a href="http://blogvault.net?src=wpbadge"><img src="//s3.amazonaws.com/bvimgs/bv_badge_dark_1.png" alt="WordPress Backup" /></a></div>';
-	}
-	$isbvfooter = $blogvault->getOption('bvBadgeInFooter');
-	if ($isbvfooter == 'yes') {
-		add_action('wp_footer', 'bvFooterHandler', 100);
-	}
-endif;
-
 if ((array_key_exists('apipage', $_REQUEST)) && stristr($_REQUEST['apipage'], 'blogvault')) {
 	global $blogvault;
 	global $wp_version, $wp_db_version;

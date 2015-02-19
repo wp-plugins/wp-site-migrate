@@ -5,6 +5,14 @@ $bvNotice = "";
 
 define('BVMIGRATEPLUGIN', true);
 
+if (!function_exists('bvAddStyleSheet')) :
+	function bvAddStyleSheet() {
+		wp_register_style('form-styles', plugins_url('form-styles.css',__FILE__ ));
+		wp_enqueue_style('form-styles');
+	}
+add_action( 'admin_init','bvAddStyleSheet');
+endif;
+
 if (!function_exists('bvAdminInitHandler')) :
 	function bvAdminInitHandler() {
 		global $bvNotice, $blogvault;
@@ -15,22 +23,6 @@ if (!function_exists('bvAdminInitHandler')) :
 			return;
 
 		if (isset($_REQUEST['bvnonce']) && wp_verify_nonce($_REQUEST['bvnonce'], "bvnonce")) {
-			$badge_location = $_REQUEST['insert_badge'];
-			if (isset($badge_location) && is_array($sidebars_widgets[$badge_location])) {
-				$control = $wp_registered_widget_updates['text'];
-				$widget = $control['callback'][0];
-				$multi_number = $widget->number + 1;
-				$instance = array("title" => "WordPress Backup", "text" => '<a href="http://blogvault.net?src=wpbadge"><img src="//s3.amazonaws.com/bvimgs/wordpress_backup_bbd1.png" alt="WordPress Backup" /></a>');
-				$_POST['widget-text'] = array($multi_number => $instance);
-				$_POST['multi_number'] = $multi_number;
-				$_POST['id_base'] = 'text';
-				call_user_func_array($control['callback'], $control['params']);
-				$sidebars_widgets[$badge_location][] = 'text-'.$multi_number;
-				wp_set_sidebars_widgets($sidebars_widgets);
-			} elseif ($badge_location == "bvfooter") {
-				$blogvault->updateOption('bvBadgeInFooter', 'yes');
-			}
-
 			if (isset($_REQUEST['blogvaultkey'])) {
 				if ((strlen($_REQUEST['blogvaultkey']) == 64)) {
 					$keys = str_split($_REQUEST['blogvaultkey'], 32);
@@ -51,45 +43,75 @@ if (!function_exists('bvAdminInitHandler')) :
 		if ($blogvault->getOption('bvActivateRedirect')) {
 			$blogvault->updateOption('bvActivateRedirect', false);
 			if (defined('BVMIGRATEPLUGIN')) {
-				wp_redirect('admin.php?page=bv-migrate');
+				wp_redirect('admin.php?page=bv-wpe-migrate');
 			} else {
-				wp_redirect('admin.php?page=bv-key-config');
+				wp_redirect('admin.php?page=bv-wpe-key-config');
 			}
 		}
 	}
-	add_action('admin_init', 'bvAdminInitHandler');
+	add_action('admin_init', 'bvWPEAdminInitHandler');
 endif;
 
-if (!function_exists('bvAdminMenu')) :
-	function bvAdminMenu() {
-		add_menu_page('blogVault', 'blogVault', 'manage_options', 'bv-key-config', 'bvKeyConf');
+if (!function_exists('bvWpeAdminMenu')) :
+	function bvWpeAdminMenu() {
+		add_menu_page('bV WPEngine', 'bV WPEngine', 'manage_options', 'bv-wpe-key-config', 'bvKeyConf');
 		if (defined('BVMIGRATEPLUGIN')) {
-			add_submenu_page('bv-key-config', 'blogVault', 'Migrate Site', 'manage_options', 'bv-migrate', 'bvMigrate');
+			add_submenu_page('bv-wpe-key-config', 'blogVault', 'Migrate Site', 'manage_options', 'bv-wpe-migrate', 'bvWpEMigrate');
 		}
 	}
-	add_action('admin_menu', 'bvAdminMenu');
+	add_action('admin_menu', 'bvWpeAdminMenu');
 endif;
 
 if ( !function_exists('bvSettingsLink') ) :
 	function bvSettingsLink($links, $file) {
 		if ( $file == plugin_basename( dirname(__FILE__).'/blogvault.php' ) ) {
-			$links[] = '<a href="' . admin_url( 'admin.php?page=bv-key-config' ) . '">'.__( 'Settings' ).'</a>';
+			$links[] = '<a href="' . admin_url( 'admin.php?page=bv-wpe-key-config' ) . '">'.__( 'Settings' ).'</a>';
 		}
 		return $links;
 	}
 	add_filter('plugin_action_links', 'bvSettingsLink', 10, 2);
 endif;
 
-if ( !function_exists('bvMigrate') ) :
-	function bvMigrate() {
+if ( !function_exists('bvWpEMigrate') ) :
+	function bvWpEMigrate() {
 		global $blogvault, $bvNotice;
 		$_error = NULL;
 		if (isset($_GET['error'])) {
 			$_error = $_GET['error'];
 		}
 ?>
-<form rel="canonical" action="https://webapp.blogvault.net/home/api_signup" style="padding:0 2% 2em 1%;" method="post" name="signup">
-<h1>Migrate Site</h1>
+	<a href="http://blogvault.net/" style="float:right;padding: 1% 1% 0 0"><img src="<?php echo plugins_url('logo.png', __FILE__); ?>" /></a>
+<?php
+		echo '<h2 style="padding-top:1%;" class="nav-tab-wrapper" id="wpseo-tabs">';
+		if ($_GET["tutorial"]) {
+			echo '<a class="nav-tab" id="migrate-tab" href="'.admin_url("admin.php?page=bv-wpe-migrate").'">Migrate</a>';
+			echo '<a class="nav-tab nav-tab-active" id="infobox-tab" href="'.admin_url("admin.php?page=bv-wpe-migrate&tutorial=true").'">Quick Tutorial</a>';
+		} else {
+			echo '<a class="nav-tab nav-tab-active" id="migrate-tab" href="'.admin_url("admin.php?page=bv-wpe-migrate").'">Migrate</a>';
+			echo '<a class="nav-tab" id="infobox-tab" href="'.admin_url("admin.php?page=bv-wpe-migrate&tutorial=true").'">Quick Tutorial</a>';
+		}
+		echo '</h2>';
+?>
+<?php if ($_GET["tutorial"]) {
+	// PUT TUTORIAL HERE
+?>
+<h1>How to get WPEngine SFTP Credentials</h1>
+<p>blogVault requires SFTP credentials to copy files from your current site to the destination WPEngine site. This information can easily be retrieved from your WP Engine dashboard.<p>
+<?php
+} else {
+	// PUT FORM HERE
+?>
+	<form rel="canonical" action="https://webapp.blogvault.net/home/api_signup" style="padding:0 2% 2em 1%;" method="post" name="signup">
+	<h1>Migrate Site</h1>
+	<p><font size="3">This Plugin makes it very easy to migrate your site to WPEngine</font></p>
+<?php if ($_error == "email") { 
+	echo '<div class="error" style="padding-bottom:0.5%;"><p>There is already an account with this email.</p></div>';
+} else if ($_error == "blog") {
+	echo '<div class="error" style="padding-bottom:0.5%;"><p>Could not create an account. Please contact <a href="http://blogvault.net/contact/">blogVault Support</a></p></div>';
+} else if ($_error == "custom") {
+	echo '<div class="error" style="padding-bottom:0.5%;"><p>'.base64_decode($_GET['message']).'</p></div>';
+}
+?>
 	<input type="hidden" name="bvsrc" value="wpplugin" />
 	<input type="hidden" name="migrate" value="wpengine" />
 	<input type="hidden" name="loc" value="MIGRATE3FREE" />
@@ -98,22 +120,11 @@ if ( !function_exists('bvMigrate') ) :
 	<input type="hidden" name="secret" value="<?php echo $blogvault->getOption('bvSecretKey'); ?>">
 	<input type='hidden' name='bvnonce' value='<?php echo wp_create_nonce("bvnonce") ?>'>
 	<div class="row-fluid">
-		<div style="color:red; font-weight: bold;" align="left">
-<?php if ($_error == "email") { ?>
-				There is already an account with this email.
-<?php } else if ($_error == "blog") { ?>
-				Could not create an account. Please contact <a href="http://blogvault.net/contact/">blogVault Support</a>
-<?php } else if ($_error == "custom") {
-	$_message = base64_decode($_GET['message']);
-?>
-			<?php echo $_message; ?>
-<?php } ?>
-		</div>
-		<div class="span5" style="border-right: 1px solid #EEE">
+		<div class="span5" style="border-right: 1px solid #EEE; padding-top:1%;">
 			<label id='label_email'>Email</label>
 			 <div class="control-group">
 				<div class="controls">
-      		<input type="text" id="email" name="email" value="<?php echo get_option('admin_email');?>">
+					<input type="text" id="email" name="email" value="<?php echo get_option('admin_email');?>">
 				</div>
 			</div>
 			<label class="control-label" for="input02">Destination Site URL</label>
@@ -122,34 +133,35 @@ if ( !function_exists('bvMigrate') ) :
 					<input type="text" class="input-large" name="newurl" placeholder="http://example.wpengine.com">
 				</div>
 			</div>
-      <label class="control-label" for="inputip">
-        FTP Host
-      	<span style="color:#08C">(of the destination server)</span>
-      </label>
-      <div class="control-group">
-        <div class="controls">
-          <input type="text" class="input-large" placeholder="eg. 1.2.3.4" name="address">
-          <p class="help-block"></p>
-        </div>
-      </div>
-      <label class="control-label" for="input01">FTP Username</label>
-      <div class="control-group">
-        <div class="controls">
-          <input type="text" class="input-large" placeholder="eg. akshatc" name="username">
-          <p class="help-block"></p>
-        </div>
-      </div>
-      <label class="control-label" for="input02">FTP Password</label>
-      <div class="control-group">
-        <div class="controls">
-          <input type="password" class="input-large" name="passwd">
-        </div>
-      </div>
+			<label class="control-label" for="inputip">
+				SFTP Server Address
+				<span style="color:#82CC39">(of the destination server)</span>
+			</label>
+			<div class="control-group">
+				<div class="controls">
+					<input type="text" class="input-large" placeholder="eg. 1.2.3.4" name="address">
+					<p class="help-block"></p>
+				</div>
+			</div>
+			<label class="control-label" for="input01">SFTP Username</label>
+			<div class="control-group">
+				<div class="controls">
+					<input type="text" class="input-large" placeholder="eg. akshatc" name="username">
+					<p class="help-block"></p>
+				</div>
+			</div>
+			<label class="control-label" for="input02">SFTP Password</label>
+			<div class="control-group">
+				<div class="controls">
+					<input type="password" class="input-large" name="passwd">
+				</div>
+			</div>
 		</div>
 	</div>
 	<input type='submit' value='Migrate'>
 </form>
 <?php
+}
 	}
 endif;
 
@@ -206,105 +218,11 @@ if ( !function_exists('bvKeyConf') ) :
 			</div>
 <!-- form wrapper starts here-->
 <div style="display:table;table-layout:fixed;width:100%;max-width:40%;float:left;padding:1% 2.5% 2em 2.5%;overflow:hidden;border: 1px solid #ebebeb;" id="form_wrapper">
-<?php if (!isset($_REQUEST['signin'])) { ?>
-			<!-- Signup form starts here -->
-			<div>
-				<h2><div style="display:block;padding-bottom:1%;">Create a blogVault Account!</div></h2>
-<?php if (!isset($_REQUEST['free'])) { ?>
-				<span style="color:grey;padding:1% 2.5% 0 2.5%;">All plans(<a href="http://blogvault.net/pricing?bvsrc=wpplugin&wpurl=<?php echo urlencode($blogvault->wpurl()) ?>">See Pricing</a>) come with free 1 week trial.</span>
-<?php } ?>
-			</div>
-
-			<form rel="canonical" action="https://webapp.blogvault.net/home/api_signup" style="padding:0 2% 2em 1%;" method="post" name="signup">
-				<input type="hidden" name="bvsrc" value="wpplugin" />
-				<input type="hidden" name="url" value="<?php echo $blogvault->wpurl(); ?>" />
-				<input type="hidden" name="secret" value="<?php echo $blogvault->getOption('bvSecretKey'); ?>">
-				<input type='hidden' name='bvnonce' value='<?php echo wp_create_nonce("bvnonce") ?>'>
-<?php if ($_error == "email") { ?>
-				<div style="color:red; font-weight: bold;" align="right">There is already an account with this email.</div>
-<?php } else if ($_error == "pass") { ?>
-				<div style="color:red; font-weight: bold;" align="right">Password does not match.</div>
-<?php } else if ($_error == "blog") { ?>
-				<div style="color:red; font-weight: bold;" align="right">Could not add the site. Please contact <a href="http://blogvault.net/contact/">blogVault Support</a></div>
-<?php } ?>
-				<table style="border-spacing:0px 10px;">
-					<tr>
-						<td><label id='label_email'<?php if ($_error == "email") echo 'style="color:red;"'; ?>><strong>Email</strong></label></td>
-						<td><input type="text" id="email" name="email" value="<?php echo get_option('admin_email');?>"></td>
-						<td><?php if ($_error == "email") echo '<p style="font-size:smaller;color:red;">has already been taken</p>' ?></td>
-					</tr>
-					<tr>
-						<td><label id='label_password' <?php if ($_error == "pass") echo 'style="color:red;"'; ?>><strong>Password</strong></label></td>
-						<td><input type="password" name="password" id="password"></td>
-						<td></td>
-					</tr>
-					<tr>
-						<td><label <?php if ($_error == "pass") echo 'style="color:red;"'; ?>><strong>Confirm Password</strong></label></td>
-						<td><input type="password" name="password_confirmation" id="confirm_password"></td>
-					</tr>
-					<tr>
-						<td><label><strong>Plan</strong></label></td>
-						<td>
-<?php 	if (isset($_REQUEST['free'])) { ?>
-							<strong>FREE OFFER</strong>
-							<input type='hidden' name='loc' value='WPPLUGINFREEOFFER'>
-<?php 	} else { ?>
-							<select name="plan">
-								<option value="1sitey" selected>1 Site - $89/year</option>
-								<option value="3sitey">3 Sites - $189/year</option>
-								<option value="7sitey">7 Sites - $389/year</option>
-								<option value="dev99m">Unlimited - $99/month</option>
-							</select>
-<?php 	} ?>
-						</td>
-					</tr>
-
-<!-- Option to insert the blogVault badge -->
-<?php if (isset($_REQUEST['free'])) { ?>
-					<tr>
-						<td colspan="2"><span style="color: gray;">&nbsp;Add the blogVault Badge to your site</span></td>
-					</tr>
-					<tr>
-						<td><a href="http://blogvault.net?src=wpbadge"><img src="//s3.amazonaws.com/bvimgs/wordpress_backup_bbd1.png" alt="Mobile Analytics" /></a></td>
-						<td style="padding-left: 20px;">
-							<div><input type="radio" name="insert_badge" value="bvfooter" checked /> In the Footer</div>
-<?php
-	global $wp_registered_sidebars;
-	global $sidebars_widgets;
-
-	foreach ((array)$wp_registered_sidebars as $index => $sidebar) {
-		if (is_active_sidebar($index) && is_array($sidebars_widgets[$index]) && (count($sidebars_widgets[$index]) > 0)) {
-?>
-							<div><input type="radio" name="insert_badge" value="<?php echo $index ?>" /> In the Sidebar</div>
-<?php
-			break;
-		}
-	}
-?>
-					</tr>
-<?php } ?>
-<!-- End of Badge -->
-
-				<tr>
-					<td></td>
-					<td><button type="submit">Register</button></td>
-				</tr>
-				<tr>
-					<td></td>
-<?php 	if (isset($_REQUEST['free'])) { ?>
-					<td><p><b>Is free plan unsuitable? </b><a href="<?php echo admin_url('admin.php?page=bv-key-config') ?>">Signup for Premium Plans</a></p></td>
-<?php 	} else { ?>
-					<td><p><b>Already have an account? </b><a href="<?php echo admin_url('admin.php?page=bv-key-config&signin=true') ?>">Sign in</a></p></td>
-<?php 	} ?>
-				</tr>
-				</table>
-			</form>
-
-			<!-- Signup form end here -->
-<?php } else { ?>
+<?php if (true) { ?>
 			<!-- Signin form end here -->
 			<div>
-			  <font size="3">Login to your blogVault Account!</font>
+				<font size="3">Login to your blogVault Account!</font><br/>
+				<font size="2">Learn more about blogVault and create your account <a href="https://blogvault.net">here</a></font>
 			</div>
 			<form rel="canonical" action="https://webapp.blogvault.net/home/api_signin" style="padding:0 2% 2em 1%;" method="post" name="signin">
 				<input type="hidden" name="bvsrc" value="wpplugin" />
@@ -332,21 +250,17 @@ if ( !function_exists('bvKeyConf') ) :
 						<td></td>
 						<td align="right"><a href="https://webapp.blogvault.net/password_resets/new?bvsrc=wpplugin&wpurl=<?php echo urlencode($blogvault->wpurl()) ?>" target="_blank">Forgot Password</a></td>
 					</tr>
-					<tr>
-						<td></td>
-						<td align="right"><p><b>New to blogVault? </b><a href="<?php echo admin_url('admin.php?page=bv-key-config') ?>">Sign up</a></p></td>
-					</tr>
 				</table>
 			</form>
 
 <?php } ?>
-		</div>	<!-- Signin  form ends here -->
+		</div>	<!-- Signin form ends here -->
 		<div class="bv_3part_column1" style="width:100%;max-width:45%;float:left;padding:3% 2.5% 0 2.5%;overflow:hidden;">
 					<div style="width:100%;overflow:hidden; margin-bottom: 10px;">
 								<blockquote><span class="bqstart" style="float:left;font-size:400%;color:#cfcfcf;">&#8220;</span><h2>blogVault is my favorite way to backup, migrate, and restore WordPress websites.&nbsp;&nbsp;<font size='2'><a href="http://bit.ly/mightyreview" style="text-decoration:none;" align="right" target="_blank">Read the complete review.</a></font></h2> <span style="float:right;"> - Kristin &#38; Mickey &#64; <a href="http://www.mightyminnow.com" style="text-decoration:none;" target="_blank">MIGHTYminnow</a> <font size='1'>(A Top WordPress Agency)</font></span></blockquote>
 					</div>
 				<font size='2' color="gray">As seen on:</font>
-				<div align="center" style="padding-top:3%;"><img src="<?php echo plugins_url('img/as_seen_in.png', __FILE__); ?>" /></div>
+				<div align="center" style="padding-top:3%;"><img src="<?php echo plugins_url('as_seen_in.png', __FILE__); ?>" /></div>
 		</div>
 
 	<?php
@@ -355,28 +269,6 @@ if ( !function_exists('bvKeyConf') ) :
 			</div> <!-- MCA -->
 			<div class="bv_ selectedinside_column2" style="margin-top:0.5%;margin-right:0;border:0;max-width:19%;padding:0.5% 0 2em 1%;overflow:hidden;" align="center">
 				<!-- SIDE COLUMN CONTENT GOES HERE -->
-<?php
-	if (!$blogvault->getOption('bvPublic')) {
-?>
-					<!-- FREE PLAN AD -->
-					<div style="background: #a6a49e; -webkit-border-radius: 4px; -moz-border-radius: 4px; border-radius: 4px; padding: 16px 32px; position: relative;">
-						<h4 style="text-align: center; color: #dbd8cf; margin: 0px 0 0px; text-transform: uppercase; font-size: 16px;">Offer</h4>
-						<span class="price" style="display: block; font-family: 'Average', serif; font-weight: 400; color: #ffffff; text-align: center; margin: 0; text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);">
-							<strong style="font-size: 60px; line-height: 1em; font-weight: 400;">Free</strong>
-						</span>
-						<small style="display: block; text-align: center; color: #dbd8cf; font-weight: 400; font-size: 12px;">With blogVault Badge</small>
-						<p style="color: #595752; border-top: 1px solid #8e8b83; padding-top: 8px; font-size: 16px; line-height: 1.6em;">
-							Personal Sites<br/>
-							Weekly Backups<br/>
-							100 MB Space<br/>
-							Self Service<br/>
-						</p>
-						<a align="center" href="<?php echo admin_url('admin.php?page=bv-key-config&free=true') ?>" style="display: block; border: 0; background: #61af05; -webkit-border-radius: 8px; -moz-border-radius: 8px; border-radius: 8px; font-family: 'PT Sans', sans-serif; font-weight: 400; font-weight: 700; text-transform: uppercase; color: #ffffff; font-size: 25.6px; text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3); text-decoration: none; text-align: center; padding: 16px 0 16px; transition: all 0.4s; -moz-transition: all 0.4s; -webkit-transition: all 0.4s; -o-transition: all 0.4s; -moz-box-shadow: 0px 2px 32px rgba(0, 0, 0, 0.3); -webkit-box-shadow: 0px 2px 32px rgba(0, 0, 0, 0.3); box-shadow: 0px 2px 32px rgba(0, 0, 0, 0.3);">
-							Sign Up
-							<small style="display: block; font-size: 0.5em; text-transform: none; font-weight: 400; color: #dbeac9; line-height: 1em; margin-top: 5.333333333333333px;"></small>
-						</a>
-					</div> <!-- EOP FREEPLANAD -->
-<?php } ?>
 			</div>
 	</div> <!-- EOP 1 -->
 
@@ -392,7 +284,7 @@ if ( !function_exists('bvActivateWarning') ) :
 		if (!$blogvault->getOption('bvPublic') && $hook_suffix == 'admin.php' ) {
 ?>
 			<div id="message" class="updated" style="padding: 8px; font-size: 16px; background-color: #dff0d8">
-						<a class="button-primary" href="<?php echo admin_url('admin.php?page=bv-key-config') ?>">Activate blogVault</a>	
+						<a class="button-primary" href="<?php echo admin_url('admin.php?page=bv-wpe-key-config') ?>">Activate blogVault</a>	
 						&nbsp;&nbsp;&nbsp;<b>Almost Done:</b> Activate your blogVault account to backup your site.
 			</div>
 <?php
