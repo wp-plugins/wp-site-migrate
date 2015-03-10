@@ -95,8 +95,41 @@ if ( !function_exists('bvWpEMigrate') ) :
 <?php if ($_GET["tutorial"]) {
 	// PUT TUTORIAL HERE
 ?>
-<h1>How to get WPEngine SFTP Credentials</h1>
-<p>blogVault requires SFTP credentials to copy files from your current site to the destination WPEngine site. This information can easily be retrieved from your WP Engine dashboard.<p>
+<div style="max-width: 650px;">
+	<h1>How to set WPEngine SFTP Credentials</h1>
+	<p>We need the SFTP credentials for your WPEngine(destination) site to get started. This information can easily be retrieved from your WPEngine dashboard.<p>
+	<p>
+		<h3>Hostname (Server)</h3>
+		In order to log into the client, you will need to know the hostname, the user name and the password. Your hostname can be one of these two options:
+		<ol>
+			<li>IP Address</li>
+			<li>Temporary URL</li>
+		</ol>
+		<i>Please note: If you are connecting to a newly created site, please use the site IP address.</i>
+	</p>
+	<p>
+		<h3>Find your IP address</h3>
+		You can easily find the IP address of your installation by visiting the WP Engine portal and looking underneath the install name on the homepage.<br/><br/>
+		<img src="<?php echo plugins_url('user-portal.jpg', __FILE__); ?>"/>
+	</p>
+	<p>
+		<h3>Find your temporary URL</h3>
+		You can easily find the temporary URL of your installation by visiting the WP Engine portal and clicking the install name you would like to SFTP to. On the next page, you will see your temporary URL next to “Domain”.</br><br/>
+		<img src="<?php echo plugins_url('temp-url.jpg', __FILE__); ?>"/>
+	</p>
+	<p>
+		<h2>User Portal</h2>
+		Once you have your host name information it is time to get your username and password. To get this, first log into the user portal.
+		When you login, you will click the install name you wish to set up SFTP for. To add a new SFTP User, select “Add Login”.<br/><br/>
+		<img src="<?php echo plugins_url('sftp-add-user.png', __FILE__); ?>"/>
+	</p>
+	<p>
+		<h4>User Name</h4>
+		Your first user will be your account_name for production, account_name-staging for the staging SFTP. All subsequent SFTP user names will begin with “account_name-” so whatever you fill in for the user name field will be automatically appended to account_name.<br/>
+		<h4>Password</h4>
+		You can now enter a password of your choice.
+	</p>
+</div>
 <?php
 } else {
 	// PUT FORM HERE
