@@ -13,8 +13,8 @@ if (!function_exists('bvAddStyleSheet')) :
 add_action( 'admin_init','bvAddStyleSheet');
 endif;
 
-if (!function_exists('bvAdminInitHandler')) :
-	function bvAdminInitHandler() {
+if (!function_exists('bvWPEAdminInitHandler')) :
+	function bvWPEAdminInitHandler() {
 		global $bvNotice, $blogvault;
 		global $sidebars_widgets;
 		global $wp_registered_widget_updates;
