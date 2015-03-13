@@ -42,11 +42,7 @@ if (!function_exists('bvWPEAdminInitHandler')) :
 
 		if ($blogvault->getOption('bvActivateRedirect')) {
 			$blogvault->updateOption('bvActivateRedirect', false);
-			if (defined('BVMIGRATEPLUGIN')) {
-				wp_redirect('admin.php?page=bv-wpe-migrate');
-			} else {
-				wp_redirect('admin.php?page=bv-wpe-key-config');
-			}
+			wp_redirect('admin.php?page=bv-wpe-migrate');
 		}
 	}
 	add_action('admin_init', 'bvWPEAdminInitHandler');
@@ -54,10 +50,7 @@ endif;
 
 if (!function_exists('bvWpeAdminMenu')) :
 	function bvWpeAdminMenu() {
-		add_menu_page('bV WPEngine', 'bV WPEngine', 'manage_options', 'bv-wpe-key-config', 'bvKeyConf');
-		if (defined('BVMIGRATEPLUGIN')) {
-			add_submenu_page('bv-wpe-key-config', 'blogVault', 'Migrate Site', 'manage_options', 'bv-wpe-migrate', 'bvWpEMigrate');
-		}
+		add_menu_page('BlogVault WPEngine', 'BlogVault WPEngine', 'manage_options', 'bv-wpe-migrate', 'bvWpEMigrate');
 	}
 	add_action('admin_menu', 'bvWpeAdminMenu');
 endif;
@@ -65,7 +58,7 @@ endif;
 if ( !function_exists('bvSettingsLink') ) :
 	function bvSettingsLink($links, $file) {
 		if ( $file == plugin_basename( dirname(__FILE__).'/blogvault.php' ) ) {
-			$links[] = '<a href="' . admin_url( 'admin.php?page=bv-wpe-key-config' ) . '">'.__( 'Settings' ).'</a>';
+			$links[] = '<a href="' . admin_url( 'admin.php?page=bv-wpe-migrate' ) . '">'.__( 'Settings' ).'</a>';
 		}
 		return $links;
 	}
@@ -80,63 +73,15 @@ if ( !function_exists('bvWpEMigrate') ) :
 			$_error = $_GET['error'];
 		}
 ?>
-	<a href="http://blogvault.net/" style="float:right;padding: 1% 1% 0 0"><img src="<?php echo plugins_url('logo.png', __FILE__); ?>" /></a>
-<?php
-		echo '<h2 style="padding-top:1%;" class="nav-tab-wrapper" id="wpseo-tabs">';
-		if ($_GET["tutorial"]) {
-			echo '<a class="nav-tab" id="migrate-tab" href="'.admin_url("admin.php?page=bv-wpe-migrate").'">Migrate</a>';
-			echo '<a class="nav-tab nav-tab-active" id="infobox-tab" href="'.admin_url("admin.php?page=bv-wpe-migrate&tutorial=true").'">Quick Tutorial</a>';
-		} else {
-			echo '<a class="nav-tab nav-tab-active" id="migrate-tab" href="'.admin_url("admin.php?page=bv-wpe-migrate").'">Migrate</a>';
-			echo '<a class="nav-tab" id="infobox-tab" href="'.admin_url("admin.php?page=bv-wpe-migrate&tutorial=true").'">Quick Tutorial</a>';
-		}
-		echo '</h2>';
-?>
-<?php if ($_GET["tutorial"]) {
-	// PUT TUTORIAL HERE
-?>
-<div style="max-width: 650px;">
-	<h1>How to set WPEngine SFTP Credentials</h1>
-	<p>We need the SFTP credentials for your WPEngine(destination) site to get started. This information can easily be retrieved from your WPEngine dashboard.<p>
-	<p>
-		<h3>Hostname (Server)</h3>
-		In order to log into the client, you will need to know the hostname, the user name and the password. Your hostname can be one of these two options:
-		<ol>
-			<li>IP Address</li>
-			<li>Temporary URL</li>
-		</ol>
-		<i>Please note: If you are connecting to a newly created site, please use the site IP address.</i>
-	</p>
-	<p>
-		<h3>Find your IP address</h3>
-		You can easily find the IP address of your installation by visiting the WP Engine portal and looking underneath the install name on the homepage.<br/><br/>
-		<img src="<?php echo plugins_url('user-portal.jpg', __FILE__); ?>"/>
-	</p>
-	<p>
-		<h3>Find your temporary URL</h3>
-		You can easily find the temporary URL of your installation by visiting the WP Engine portal and clicking the install name you would like to SFTP to. On the next page, you will see your temporary URL next to “Domain”.</br><br/>
-		<img src="<?php echo plugins_url('temp-url.jpg', __FILE__); ?>"/>
-	</p>
-	<p>
-		<h2>User Portal</h2>
-		Once you have your host name information it is time to get your username and password. To get this, first log into the user portal.
-		When you login, you will click the install name you wish to set up SFTP for. To add a new SFTP User, select “Add Login”.<br/><br/>
-		<img src="<?php echo plugins_url('sftp-add-user.png', __FILE__); ?>"/>
-	</p>
-	<p>
-		<h4>User Name</h4>
-		Your first user will be your account_name for production, account_name-staging for the staging SFTP. All subsequent SFTP user names will begin with “account_name-” so whatever you fill in for the user name field will be automatically appended to account_name.<br/>
-		<h4>Password</h4>
-		You can now enter a password of your choice.
-	</p>
-</div>
-<?php
-} else {
-	// PUT FORM HERE
-?>
-	<form rel="canonical" action="https://webapp.blogvault.net/home/api_signup" style="padding:0 2% 2em 1%;" method="post" name="signup">
-	<h1>Migrate Site</h1>
-	<p><font size="3">This Plugin makes it very easy to migrate your site to WPEngine</font></p>
+		<div class="logo-container" style="padding: 50px 0px 10px 20px">
+			<a href="http://blogvault.net/" style="padding-right: 20px;"><img src="<?php echo plugins_url('logo.png', __FILE__); ?>" /></a>
+			<a href="http://wpengine.com/"><img src="<?php echo plugins_url('wpengine-logo.png', __FILE__); ?>" /></a>
+		</div>
+
+		<div id="wrapper">
+			<form rel="canonical" action="https://webapp.blogvault.net/home/api_signup" style="padding:0 2% 2em 1%;" method="post" name="signup">
+				<h1>Migrate Site to WP Engine</h1>
+				<p><font size="3">This plugin makes it very easy to migrate your site to WP Engine</font></p>
 <?php if ($_error == "email") { 
 	echo '<div class="error" style="padding-bottom:0.5%;"><p>There is already an account with this email.</p></div>';
 } else if ($_error == "blog") {
@@ -145,183 +90,104 @@ if ( !function_exists('bvWpEMigrate') ) :
 	echo '<div class="error" style="padding-bottom:0.5%;"><p>'.base64_decode($_GET['message']).'</p></div>';
 }
 ?>
-	<input type="hidden" name="bvsrc" value="wpplugin" />
-	<input type="hidden" name="migrate" value="wpengine" />
-	<input type="hidden" name="loc" value="MIGRATE3FREE" />
-	<input type="hidden" name="type" value="sftp" />
-	<input type="hidden" name="url" value="<?php echo $blogvault->wpurl(); ?>" />
-	<input type="hidden" name="secret" value="<?php echo $blogvault->getOption('bvSecretKey'); ?>">
-	<input type='hidden' name='bvnonce' value='<?php echo wp_create_nonce("bvnonce") ?>'>
-	<div class="row-fluid">
-		<div class="span5" style="border-right: 1px solid #EEE; padding-top:1%;">
-			<label id='label_email'>Email</label>
-			 <div class="control-group">
-				<div class="controls">
-					<input type="text" id="email" name="email" value="<?php echo get_option('admin_email');?>">
-				</div>
-			</div>
-			<label class="control-label" for="input02">Destination Site URL</label>
-			<div class="control-group">
-				<div class="controls">
-					<input type="text" class="input-large" name="newurl" placeholder="http://example.wpengine.com">
-				</div>
-			</div>
-			<label class="control-label" for="inputip">
-				SFTP Server Address
-				<span style="color:#82CC39">(of the destination server)</span>
-			</label>
-			<div class="control-group">
-				<div class="controls">
-					<input type="text" class="input-large" placeholder="eg. 1.2.3.4" name="address">
-					<p class="help-block"></p>
-				</div>
-			</div>
-			<label class="control-label" for="input01">SFTP Username</label>
-			<div class="control-group">
-				<div class="controls">
-					<input type="text" class="input-large" placeholder="eg. akshatc" name="username">
-					<p class="help-block"></p>
-				</div>
-			</div>
-			<label class="control-label" for="input02">SFTP Password</label>
-			<div class="control-group">
-				<div class="controls">
-					<input type="password" class="input-large" name="passwd">
-				</div>
-			</div>
-		</div>
-	</div>
-	<input type='submit' value='Migrate'>
-</form>
-<?php
-}
-	}
-endif;
-
-if ( !function_exists('bvKeyConf') ) :
-	function bvKeyConf() {
-		global $blogvault, $bvNotice;
-		$_error = NULL;
-		if (isset($_GET['error'])) {
-			$_error = $_GET['error'];
-		}
-?>
-
-
-<div class="bv_page_wide" style="display:block;background:#fff;padding-right:1%;overflow:hidden; margin-right:2.5%;margin-top:1%;"> <!-- SOWP MAIN -->
-
-	<div class="bv_inside_heading" style="padding:0.25% 0 0 2%;overflow:hidden;border-bottom:1px solid #ebebeb;">
-	<a href="http://blogvault.net/"><img src="<?php echo plugins_url('img/logo.png', __FILE__); ?>" /></a>
-	</div>
-
-
-	<div style="overflow:hidden;">	<!-- SOP 1 -->
-			<div class="bv_inside_column1" style="width:100%;max-width:75%;float:left;padding:1% 2.5% 1% 2.5%;border-right:1px solid #ebebeb;overflow:hidden;"> <!-- MCA -->
-<?php if (!isset($_REQUEST['free'])) { ?>
-						<div align="center" style="margin-bottom: 25px;">
-									<iframe style="border: 1px solid gray; padding: 3px;" src="https://player.vimeo.com/video/88638675?title=0&amp;byline=0&amp;portrait=0&amp;color=ffffff" width="450" height="275" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
-					</div>
-<?php } ?>
-
-
-<?php
-		echo $bvNotice;
-		if ($blogvault->getOption('bvPublic')) {
-?>
-		<div style="display:table;table-layout:fixed;width:100%;float:left;padding:1% 2.5% 2em 2.5%;overflow:hidden;" id="form_wrapper">
-				<font size='3'><a href='https://webapp.blogvault.net' target="_blank">Click here</a> to manage your backups from the <a href='https://webapp.blogvault.net' target="_blank">blogVault Dashboard.</a></font>
-				<br/><br/>
-<?php if (isset($_REQUEST['changekey'])) { ?>
-				<form method='post'>
-					<font size='3'>Change blogVault Key:</font> <input type='text' name='blogvaultkey' size='65'>
-					<input type='hidden' name='change_parameter' value='true'>
-					<input type='hidden' name='bvnonce' value='<?php echo wp_create_nonce("bvnonce") ?>'>
-					<input type='submit' value='Change'>
-				</form>
-<?php } ?>
-		</div>
-<?php } else { ?> <!-- Change keys ELSE -->
-			<div style="display:none">
-				<a href='http://blogvault.net?bvsrc=bvplugin&wpurl=<?php echo urlencode($blogvault->wpurl()) ?>'> Click here </a> to get your blogVault Key.</font>
-				<form method='post'> 
-					<font size='3'>Enter blogVault Key:</font> <input type='text' name='blogvaultkey' size='65'>
-					<input type='hidden' name='bvnonce' value='<?php echo wp_create_nonce("bvnonce") ?>'>
-					<input type='submit' value='Activate'>	
-				</form>
-			</div>
-<!-- form wrapper starts here-->
-<div style="display:table;table-layout:fixed;width:100%;max-width:40%;float:left;padding:1% 2.5% 2em 2.5%;overflow:hidden;border: 1px solid #ebebeb;" id="form_wrapper">
-<?php if (true) { ?>
-			<!-- Signin form end here -->
-			<div>
-				<font size="3">Login to your blogVault Account!</font><br/>
-				<font size="2">Learn more about blogVault and create your account <a href="https://blogvault.net">here</a></font>
-			</div>
-			<form rel="canonical" action="https://webapp.blogvault.net/home/api_signin" style="padding:0 2% 2em 1%;" method="post" name="signin">
 				<input type="hidden" name="bvsrc" value="wpplugin" />
-				<input type="hidden" name="url" value="<?php echo $blogvault->wpurl(); ?>">
+				<input type="hidden" name="migrate" value="wpengine" />
+				<input type="hidden" name="loc" value="MIGRATE3FREE" />
+				<input type="hidden" name="type" value="sftp" />
+				<input type="hidden" name="url" value="<?php echo $blogvault->wpurl(); ?>" />
 				<input type="hidden" name="secret" value="<?php echo $blogvault->getOption('bvSecretKey'); ?>">
 				<input type='hidden' name='bvnonce' value='<?php echo wp_create_nonce("bvnonce") ?>'>
-<?php if ($_error == "user") { ?>
-				<div style="color:red; font-weight: bold;">Incorrect Username or Password</div>
-<?php } ?>
-				<table style="border-spacing:50px 10px;">
-					<tr>
-						<td><label><strong>Email</strong></label></td>
-						<td><input type="text" name="email" /></td>
-					</tr>
-					<tr>
-						<td width="115"><label><strong>Password</strong></label></td>
-						<td><input type="password" name="password" /></td>
-					<tr/>
-					<?php if ($_error == "pass") echo '<tr><td colspan=3><p style="color:red;">The Email or password provided is incorrect</p></td></tr>' ?>
-					<tr>
-						<td></td>
-						<td align="right"><button type="submit">Sign In</button></td>
-					</tr>
-					<tr>
-						<td></td>
-						<td align="right"><a href="https://webapp.blogvault.net/password_resets/new?bvsrc=wpplugin&wpurl=<?php echo urlencode($blogvault->wpurl()) ?>" target="_blank">Forgot Password</a></td>
-					</tr>
-				</table>
-			</form>
-
-<?php } ?>
-		</div>	<!-- Signin form ends here -->
-		<div class="bv_3part_column1" style="width:100%;max-width:45%;float:left;padding:3% 2.5% 0 2.5%;overflow:hidden;">
-					<div style="width:100%;overflow:hidden; margin-bottom: 10px;">
-								<blockquote><span class="bqstart" style="float:left;font-size:400%;color:#cfcfcf;">&#8220;</span><h2>blogVault is my favorite way to backup, migrate, and restore WordPress websites.&nbsp;&nbsp;<font size='2'><a href="http://bit.ly/mightyreview" style="text-decoration:none;" align="right" target="_blank">Read the complete review.</a></font></h2> <span style="float:right;"> - Kristin &#38; Mickey &#64; <a href="http://www.mightyminnow.com" style="text-decoration:none;" target="_blank">MIGHTYminnow</a> <font size='1'>(A Top WordPress Agency)</font></span></blockquote>
+				<div class="row-fluid">
+					<div class="span5" style="border-right: 1px solid #EEE; padding-top:1%;">
+						<label id='label_email'>Email</label>
+			 			<div class="control-group">
+							<div class="controls">
+								<input type="text" id="email" name="email" value="<?php echo get_option('admin_email');?>">
+							</div>
+						</div>
+						<label class="control-label" for="input02">Destination Site URL</label>
+						<div class="control-group">
+							<div class="controls">
+								<input type="text" class="input-large" name="newurl" placeholder="http://example.wpengine.com">
+							</div>
+						</div>
+						<label class="control-label" for="inputip">
+							SFTP Server Address
+							<span style="color:#162A33">(of the destination server)</span>
+						</label>
+						<div class="control-group">
+							<div class="controls">
+								<input type="text" class="input-large" placeholder="eg. 1.2.3.4" name="address">
+								<p class="help-block"></p>
+							</div>
+						</div>
+						<label class="control-label" for="input01">SFTP Username</label>
+						<div class="control-group">
+							<div class="controls">
+								<input type="text" class="input-large" placeholder="eg. akshatc" name="username">
+								<p class="help-block"></p>
+							</div>
+						</div>
+						<label class="control-label" for="input02">SFTP Password</label>
+						<div class="control-group">
+							<div class="controls">
+								<input type="password" class="input-large" name="passwd">
+							</div>
+						</div>
 					</div>
-				<font size='2' color="gray">As seen on:</font>
-				<div align="center" style="padding-top:3%;"><img src="<?php echo plugins_url('as_seen_in.png', __FILE__); ?>" /></div>
-		</div>
-
-	<?php
-	}
-?>
-			</div> <!-- MCA -->
-			<div class="bv_ selectedinside_column2" style="margin-top:0.5%;margin-right:0;border:0;max-width:19%;padding:0.5% 0 2em 1%;overflow:hidden;" align="center">
-				<!-- SIDE COLUMN CONTENT GOES HERE -->
+				</div>
+				<input type='submit' value='Migrate'>
+			</form>
+			<div style="max-width: 650px; padding-left: 20px;">
+				<h1>How to Use This Plugin</h1>
+				<p>In order to successfully move over to WP Engine using this plugin, you will need to find your <strong>SFTP Host</strong>, <strong>SFTP Username</strong>, and <strong>SFTP Password</strong>. We make this very easy to find!</p>
+				<p>In addition to that information, you will need to supply a valid email address and the WP Engine Site URL.</p>
+				<p>Please note, this plugin is best used along side our migration checklist. Our checklist will be able to provide invaluable information about what data to supply each field.</p>
+				<h2>Email</h2>
+				<p>This email is used for all communications during the migration process. Please make sure the email you submit is valid and that you have access to the account.</p>
+				<h2>WP Engine Site URL</h2>
+				<p>This represents the URL you want your site to be migrated too. </p>
+				<h3>Using WP Engine’s Temporary URL</h3>
+				<p>If you want to view the site on the WP Engine platform before pointing your domain to us, you will want to use WP Engine’s temporary URL for this field. To find your WP Engine Site URL, follow these steps:</p>
+				<ol><li>Log in to the WP Engine User Portal at my.wpengine.com.</li>
+				<li>Select the install that you want to move this site too.</li>
+				<li>Make note of the WP Engine URL labeled “CNAME”</li></ol>
+				<p>Here is a visual reference to find the WP Engine Site URL:<p/>
+				<img src="<?php echo plugins_url("quick-tut-1.jpg", __FILE__); ?>" />
+				<h3>Using Custom URL</h3>
+				<p>You may find yourself migrating your site to a different URL to WP Engine. For example, you may have been developing a site on your current host and want to launch it on WP Engine.</p>
+				<p>If this sounds like your project, the “WP Engine Site URL” field above should be populated with the domain you want your WP Engine site to live under.</p>
+				<p>For example, if you are currently hosting your site under <strong>mydomain-dev.com</strong> and you want your site to be migrated to work with the domain <strong>mydomain.com</strong>, “WP Engine Site URL” will be <strong>http://mydomain.com.</strong></p>
+				<h2>SFTP Host</h2>
+				<p>To find your SFTP Host, follow these steps:</p>
+				<ol><li>Log in to the WP Engine User Portal at my.wpengine.com.</li>
+				<li>Select the install that you want to move this site too.</li>
+				<li>Find the SFTP Login panel at the bottom.</li>
+				<li>The Server Address is your SFTP Host.</li></ol>
+				<p>Here is a visual reference to find the SFTP Host:</p>
+				<img src="<?php echo plugins_url("quick-tut-2.jpg", __FILE__); ?>" />
+				<h2>SFTP Username</h2>
+				<p>To find your SFTP Host, follow these steps:</p>
+				<ol><li>Log in to the WP Engine User Portal at my.wpengine.com.</li>
+				<li>Select the install that you want to move this site too.</li>
+				<li>Find the SFTP Login panel at the bottom.</li>
+				<li>You will find the Username under the Server Address.</li></ol>
+				
+				<strong>Note: Make sure the username you select has the environment “Live” selected</strong>
+				<p>Here is a visual reference to find the SFTP Username:</p>
+				<img src="<?php echo plugins_url("quick-tut-3.jpg", __FILE__); ?>" />
+				<h2>SFTP Password</h2>
+				<p>To find your SFTP Password, follow these steps:</p>
+				<ol><li>Log in to the WP Engine User Portal at my.wpengine.com.</li>
+				<li>Select the install that you want to move this site too.</li>
+				<li>Find the SFTP Login panel at the bottom.</li>
+				<li>Click the Username you are using for the migration.</li>
+				<img src="<?php echo plugins_url("quick-tut-4.jpg", __FILE__); ?>" />
+				<li>A new screen should pop up for you to change your password. Change the password, confirm the password and save it to our server. Note that the Environment should be set to “Production”, which is your live environment.</li>
+				<img src="<?php echo plugins_url("quick-tut-5.jpg", __FILE__); ?>" />
+				</ol>
 			</div>
-	</div> <!-- EOP 1 -->
-
-</div> <!-- EOWP MAIN -->
+		</div> <!-- wrapper ends here -->
 <?php
-}
-endif;
-
-if ( !function_exists('bvActivateWarning') ) :
-	function bvActivateWarning() {
-		global $hook_suffix;
-		global $blogvault;
-		if (!$blogvault->getOption('bvPublic') && $hook_suffix == 'admin.php' ) {
-?>
-			<div id="message" class="updated" style="padding: 8px; font-size: 16px; background-color: #dff0d8">
-						<a class="button-primary" href="<?php echo admin_url('admin.php?page=bv-wpe-key-config') ?>">Activate blogVault</a>	
-						&nbsp;&nbsp;&nbsp;<b>Almost Done:</b> Activate your blogVault account to backup your site.
-			</div>
-<?php
-		}
 	}
-	add_action('admin_notices', 'bvActivateWarning');
 endif;
