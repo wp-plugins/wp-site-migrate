@@ -119,6 +119,11 @@ class BVHttpClient {
 	}
 
 	function request($method, $url, $headers = array(), $body = null) {
+		if (array_key_exists('bvapicheck', $_REQUEST)) {
+			$url = $url."&bvapicheck=".$_REQUEST['bvapicheck'];
+		} else {
+			$url = $url."&bvdirect=true";
+		}
 		$this->sendRequest($method, $url, $headers, $body);
 		return $this->getResponse();
 	}
