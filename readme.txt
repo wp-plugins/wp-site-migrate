@@ -13,7 +13,9 @@ The easiest way to migrate your site to WPEngine
 
 == Description ==
 
-The easiest way to migrate your site to WPEngine
+The easiest way to migrate your site to WPEngine.
+
+This plugin is still in Beta.
 
 == Changelog ==
 = 1.15 =
