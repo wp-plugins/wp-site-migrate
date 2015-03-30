@@ -324,7 +324,6 @@ if ((array_key_exists('apipage', $_REQUEST)) && stristr($_REQUEST['apipage'], 'b
 			$sys_info = array(
 				'serverip' => $_SERVER['SERVER_ADDR'],
 				'host' => $_SERVER['HTTP_HOST'],
-				'uname' => @php_uname("a"),
 				'phpversion' => phpversion(),
 				'uid' => getmyuid(),
 				'gid' => getmygid(),
