@@ -140,6 +140,7 @@ if ( !function_exists('bvWpEMigrate') ) :
 			</form>
 			<div style="max-width: 650px; padding-left: 20px;">
 				<h1>How to Use This Plugin</h1>
+				<iframe src="//fast.wistia.net/embed/iframe/0rrkl3w1vu?videoFoam=true" allowtransparency="true" frameborder="0" scrolling="no" class="wistia_embed" name="wistia_embed" allowfullscreen mozallowfullscreen webkitallowfullscreen oallowfullscreen msallowfullscreen width="500" height="313"></iframe><script src="//fast.wistia.net/assets/external/E-v1.js"></script>
 				<p>In order to successfully move over to WP Engine using this plugin, you will need to find your <strong>SFTP Host</strong>, <strong>SFTP Username</strong>, and <strong>SFTP Password</strong>. We make this very easy to find!</p>
 				<p>In addition to that information, you will need to supply a valid email address and the WP Engine Site URL.</p>
 				<p>Please note, this plugin is best used along side our migration checklist. Our checklist will be able to provide invaluable information about what data to supply each field.</p>
