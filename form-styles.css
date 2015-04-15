@@ -5,7 +5,7 @@
 	font-weight: bold;
 	}
 
-.toplevel_page_bv-wpe-migrate label, .toplevel_page_bv-wpe-migrate textarea{
+.toplevel_page_bv-wpe-migrate input, .toplevel_page_bv-wpe-migrate textarea{
 	width: 180px;
 	margin-bottom: 20px;
 	}

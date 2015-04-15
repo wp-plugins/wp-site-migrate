@@ -78,7 +78,7 @@ if ( !function_exists('bvWpEMigrate') ) :
 			<a href="http://wpengine.com/"><img src="<?php echo plugins_url('wpengine-logo.png', __FILE__); ?>" /></a>
 		</div>
 
-		<div id="wrapper">
+		<div id="wrapper toplevel_page_bv-wpe-migrate">
 			<form rel="canonical" action="https://webapp.blogvault.net/home/api_signup" style="padding:0 2% 2em 1%;" method="post" name="signup">
 				<h1>Migrate Site to WP Engine</h1>
 				<p><font size="3">This plugin makes it very easy to migrate your site to WP Engine</font></p>
