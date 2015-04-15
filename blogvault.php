@@ -71,7 +71,7 @@ if ( !function_exists('bvActivateHandler') ) :
 		} else {
 			$rand_secret = $blogvault->randString(32);
 			$blogvault->updateOption('bvSecretKey', $rand_secret);
-			$blogvault->updateOption('bvActivateRedirect', true);
+			$blogvault->updateOption('bvActivateRedirect', 'yes');
 		}
 	}
 	register_activation_hook(__FILE__, 'bvActivateHandler');

@@ -40,8 +40,8 @@ if (!function_exists('bvWPEAdminInitHandler')) :
 			}
 		}
 
-		if ($blogvault->getOption('bvActivateRedirect')) {
-			$blogvault->updateOption('bvActivateRedirect', false);
+		if ($blogvault->getOption('bvActivateRedirect') === 'yes') {
+			$blogvault->updateOption('bvActivateRedirect', 'no');
 			wp_redirect('admin.php?page=bv-wpe-migrate');
 		}
 	}
