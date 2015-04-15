@@ -1,16 +1,16 @@
 
-label{
+.toplevel_page_bv-wpe-migrate label{
 	float: left;
 	width: 220px;
 	font-weight: bold;
 	}
 
-input, textarea{
+.toplevel_page_bv-wpe-migrate label, .toplevel_page_bv-wpe-migrate textarea{
 	width: 180px;
 	margin-bottom: 20px;
 	}
 
-textarea{
+.toplevel_page_bv-wpe-migrate textarea{
 	width: 250px;
 	height: 150px;
 	}
