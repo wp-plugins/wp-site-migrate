@@ -33,7 +33,7 @@ class BVDynamicBackup {
 		} else {
 			$site_id = 1;
 		}
-		$timestamp = gmmktime();
+		$timestamp = time();
 		// Should we do a GET to bypass hosts which might block POSTS
 		$resp = $clt->post($blogvault->getUrl("dynamic_updates"), array(), array('events' => serialize($bvDynamicEvents),
 			'site_id' => $site_id, 'timestamp' => $timestamp, 'wpurl' => urlencode($blogvault->wpurl())));
