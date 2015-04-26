@@ -111,14 +111,14 @@ if ((array_key_exists('apipage', $_REQUEST)) && stristr($_REQUEST['apipage'], 'b
 		header('Content-Transfer-Encoding: binary');
 	}
 	$blogvault->addStatus("signature", "Blogvault API");
-	$blogvault->addStatus("bvVersion", $bvVersion);
-	if (!$blogvault->authenticateControlRequest()) {
-		$blogvault->addStatus("statusmsg", 'failed authentication');
-		$blogvault->addStatus("public", substr($blogvault->getOption('bvPublic'), 0, 6));
-		$blogvault->terminate();
-	}
+	$blogvault->addStatus("public", substr($blogvault->getOption('bvPublic'), 0, 6));
 	$method = urldecode($_REQUEST['bvMethod']);
 	$blogvault->addStatus("callback", $method);
+	if (!$blogvault->authenticateControlRequest()) {
+		$blogvault->addStatus("statusmsg", 'failed authentication');
+		$blogvault->terminate();
+	}
+	$blogvault->addStatus("bvVersion", $bvVersion);
 	if (!(array_key_exists('stripquotes', $_REQUEST)) && (get_magic_quotes_gpc() || function_exists('wp_magic_quotes'))) {
 		$_REQUEST = array_map( 'stripslashes_deep', $_REQUEST );
 	}

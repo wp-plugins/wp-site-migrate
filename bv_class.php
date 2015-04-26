@@ -506,17 +506,23 @@ class BlogVault {
 		$sig = $_REQUEST['sig'];
 		$time = intval($_REQUEST['bvTime']);
 		$version = $_REQUEST['bvVersion'];
-		if ($time < intval($this->getOption('bvLastRecvTime')) - 300) {
+		$this->addStatus("requestsig", $sig);
+		$this->addStatus("requesttime", $time);
+		$this->addStatus("requestversion", $version);
+		$bvlastrecvtime = $this->getOption('bvLastRecvTime');
+		if ($time < intval($bvlastrecvtime) - 300) {
+			$this->addStatus("bvlastrecvtime", $bvlastrecvtime);
 			return false;
 		}
 		if (array_key_exists('sha1', $_REQUEST)) {
-			if (sha1($method.$secret.$time.$version) != $sig) {
-				return false;
-			}
+			$sig_match = sha1($method.$secret.$time.$version);
+			$this->addStatus('sha1', $_REQUEST['sha1']);
 		} else {
-		if (md5($method.$secret.$time.$version) != $sig) {
+			$sig_match = md5($method.$secret.$time.$version); 
+		}
+		if ($sig_match != $sig) {
+			$this->addStatus("sigmatch", $sig_match);
 			return false;
-			}
 		}
 		$this->updateOption('bvLastRecvTime', $time);
 		return true;
