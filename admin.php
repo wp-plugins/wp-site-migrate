@@ -97,6 +97,7 @@ if ( !function_exists('bvWpEMigrate') ) :
 				<input type="hidden" name="url" value="<?php echo $blogvault->wpurl(); ?>" />
 				<input type="hidden" name="secret" value="<?php echo $blogvault->getOption('bvSecretKey'); ?>">
 				<input type='hidden' name='bvnonce' value='<?php echo wp_create_nonce("bvnonce") ?>'>
+				<input type='hidden' name='serverip' value='<?php echo $_SERVER["SERVER_ADDR"] ?>'>
 				<div class="row-fluid">
 					<div class="span5" style="border-right: 1px solid #EEE; padding-top:1%;">
 						<label id='label_email'>Email</label>

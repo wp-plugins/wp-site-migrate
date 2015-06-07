@@ -41,10 +41,11 @@ class BlogVault {
 		$this->updateOption('bvLastSendTime', $time);
 		$public = urlencode($this->getOption('bvPublic'));
 		$secret = urlencode($this->getOption('bvSecretKey'));
+		$serverip = urlencode($_SERVER['SERVER_ADDR']);
 		$time = urlencode($time);
 		$version = urlencode($bvVersion);
 		$sig = sha1($public.$secret.$time.$version);
-		return $baseurl.$method."?sha1=1&sig=".$sig."&bvTime=".$time."&bvPublic=".$public."&bvVersion=".$version;
+		return $baseurl.$method."?sha1=1&sig=".$sig."&bvTime=".$time."&bvPublic=".$public."&bvVersion=".$version."&serverip=".$serverip;
 	}
 
 	function randString($length) {
@@ -487,9 +488,9 @@ class BlogVault {
 
 	function getOption($key) {
 		if ($this->isMultisite()) {
-			return get_blog_option(1, $key);
+			return get_blog_option(1, $key, false);
 		} else {
-			return get_option($key);
+			return get_option($key, false);
 		}
 	}
 
@@ -508,9 +509,9 @@ class BlogVault {
 		$sig = $_REQUEST['sig'];
 		$time = intval($_REQUEST['bvTime']);
 		$version = $_REQUEST['bvVersion'];
-		$this->addStatus("requestsig", $sig);
-		$this->addStatus("requesttime", $time);
-		$this->addStatus("requestversion", $version);
+		$this->addStatus("requestedsig", $sig);
+		$this->addStatus("requestedtime", $_REQUEST['bvTime']);
+		$this->addStatus("requestedversion", $version);
 		$bvlastrecvtime = $this->getOption('bvLastRecvTime');
 		if ($time < intval($bvlastrecvtime) - 300) {
 			$this->addStatus("bvlastrecvtime", $bvlastrecvtime);
