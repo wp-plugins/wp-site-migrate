@@ -5,7 +5,8 @@ Plugin URI: http://blogvault.net/
 Description: The easiest way to migrate your site to WPEngine
 Author: Akshat
 Author URI: http://blogvault.net/
-Version: 1.16
+Version: 1.17
+Network: True
  */
 
 /*  Copyright YEAR  PLUGIN_AUTHOR_NAME  (email : PLUGIN AUTHOR EMAIL)
@@ -28,7 +29,7 @@ Version: 1.16
 global $bvVersion;
 global $blogvault;
 global $bvDynamicEvents;
-$bvVersion = '1.16';
+$bvVersion = '1.17';
 
 if (is_admin())
 	require_once dirname( __FILE__ ) . '/admin.php';
@@ -64,7 +65,7 @@ if ( !function_exists('bvActivateHandler') ) :
 			wp_schedule_event(time(), 'daily', 'bvdailyping_daily_event');
 		}
 		##BVKEYSLOCATE##
-		if ($blogvault->getOption('bvPublic')) {
+		if ($blogvault->getOption('bvPublic') !== false) {
 			$blogvault->updateOption('bvLastSendTime', time());
 			$blogvault->updateOption('bvLastRecvTime', 0);
 			$blogvault->activate();
@@ -110,15 +111,18 @@ if ((array_key_exists('apipage', $_REQUEST)) && stristr($_REQUEST['apipage'], 'b
 		header("Content-type: application/binary");
 		header('Content-Transfer-Encoding: binary');
 	}
-	$blogvault->addStatus("signature", "Blogvault API");
-	$blogvault->addStatus("public", substr($blogvault->getOption('bvPublic'), 0, 6));
 	$method = urldecode($_REQUEST['bvMethod']);
+	$blogvault->addStatus("signature", "Blogvault API");
 	$blogvault->addStatus("callback", $method);
+	$blogvault->addStatus("public", substr($blogvault->getOption('bvPublic'), 0, 6));
 	if (!$blogvault->authenticateControlRequest()) {
 		$blogvault->addStatus("statusmsg", 'failed authentication');
 		$blogvault->terminate();
 	}
 	$blogvault->addStatus("bvVersion", $bvVersion);
+	$blogvault->addStatus("abspath", urldecode(ABSPATH));
+	$blogvault->addStatus("serverip", urlencode($_SERVER['SERVER_ADDR']));
+	$blogvault->addStatus("siteurl", urlencode($blogvault->wpurl()));
 	if (!(array_key_exists('stripquotes', $_REQUEST)) && (get_magic_quotes_gpc() || function_exists('wp_magic_quotes'))) {
 		$_REQUEST = array_map( 'stripslashes_deep', $_REQUEST );
 	}
@@ -355,6 +359,10 @@ if ((array_key_exists('apipage', $_REQUEST)) && stristr($_REQUEST['apipage'], 'b
 		$table = urldecode($_REQUEST['table']);
 		$type = urldecode($_REQUEST['type']);
 		$blogvault->checkTable($table, $type);
+		break;
+	case "repairtable":
+		$table = urldecode($_REQUEST['table']);
+		$blogvault->repairTable($table);
 		break;
 	case "tablekeys":
 		$table = urldecode($_REQUEST['table']);

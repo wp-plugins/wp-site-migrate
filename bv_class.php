@@ -110,7 +110,7 @@ class BlogVault {
 					}
 					$bfa[] = $fdata;
 					$bfc++;
-					if ($bfc == 512) {
+					if ($bfc == $bsize) {
 						$str = serialize($bfa);
 						$clt->newChunkedPart(strlen($str).":".$str);
 						$bfc = 0;
@@ -381,6 +381,13 @@ class BlogVault {
 		return true;
 	}
 
+	function repairTable($table) {
+		global $wpdb, $blogvault;
+		$info = $wpdb->get_results("REPAIR TABLE $table;", ARRAY_A);
+		$blogvault->addStatus("status", $info);
+		return true;
+	}
+   
 	function tableCreate($tbl) {
 		global $wpdb;
 		$str = "SHOW CREATE TABLE " . $tbl . ";";
@@ -479,19 +486,30 @@ class BlogVault {
 	}
 
 	function updateOption($key, $value) {
-		if ($this->isMultisite()) {
-			update_blog_option(1, $key, $value);
+		if (function_exists('update_site_option')) {
+			update_site_option($key, $value);
 		} else {
-			update_option($key, $value);
+			if ($this->isMultisite()) {
+				update_blog_option(1, $key, $value);
+			} else {
+				update_option($key, $value);
+			}
 		}
 	}
 
 	function getOption($key) {
-		if ($this->isMultisite()) {
-			return get_blog_option(1, $key, false);
-		} else {
-			return get_option($key, false);
+		$res = false;
+		if (function_exists('get_site_option')) {
+			$res = get_site_option($key, false);
 		}
+		if ($res === false) {
+			if ($this->isMultisite()) {
+				$res = get_blog_option(1, $key, false);
+			} else {
+				$res = get_option($key, false);
+			}
+		}
+		return $res;
 	}
 
 	function getAllTables() {

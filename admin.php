@@ -1,9 +1,20 @@
 <?php
 global $blogvault;
 global $bvNotice;
-$bvNotice = "";
+global $bvWPEAdminPage;
+$bvNotice = '';
+$bvWPEAdminPage = 'bv-wpe-migrate';
 
-define('BVMIGRATEPLUGIN', true);
+if (!function_exists('bvWPEAdminUrl')) :
+	function bvWPEAdminUrl($_params = '') {
+		global $bvWPEAdminPage;
+		if (function_exists('network_admin_url')) {
+			return network_admin_url('admin.php?page='.$bvWPEAdminPage.$_params);
+		} else {
+			return admin_url('admin.php?page='.$bvWPEAdminPage.$_params);
+		}
+	}
+endif;
 
 if (!function_exists('bvAddStyleSheet')) :
 	function bvAddStyleSheet() {
@@ -42,7 +53,7 @@ if (!function_exists('bvWPEAdminInitHandler')) :
 
 		if ($blogvault->getOption('bvActivateRedirect') === 'yes') {
 			$blogvault->updateOption('bvActivateRedirect', 'no');
-			wp_redirect('admin.php?page=bv-wpe-migrate');
+			wp_redirect(bvWPEAdminUrl());
 		}
 	}
 	add_action('admin_init', 'bvWPEAdminInitHandler');
@@ -50,15 +61,20 @@ endif;
 
 if (!function_exists('bvWpeAdminMenu')) :
 	function bvWpeAdminMenu() {
-		add_menu_page('BlogVault WPEngine', 'BlogVault WPEngine', 'manage_options', 'bv-wpe-migrate', 'bvWpEMigrate');
+		global $bvWPEAdminPage;
+		add_menu_page('WP Engine Migrate', 'WP Engine Migrate', 'manage_options', $bvWPEAdminPage, 'bvWpEMigrate');
 	}
-	add_action('admin_menu', 'bvWpeAdminMenu');
+	if (function_exists('is_multisite') && is_multisite()) {
+		add_action('network_admin_menu', 'bvWpeAdminMenu');
+	} else {
+		add_action('admin_menu', 'bvWpeAdminMenu');
+	}
 endif;
 
 if ( !function_exists('bvSettingsLink') ) :
 	function bvSettingsLink($links, $file) {
 		if ( $file == plugin_basename( dirname(__FILE__).'/blogvault.php' ) ) {
-			$links[] = '<a href="' . admin_url( 'admin.php?page=bv-wpe-migrate' ) . '">'.__( 'Settings' ).'</a>';
+			$links[] = '<a href="'.bvWPEAdminUrl().'">'.__( 'Settings' ).'</a>';
 		}
 		return $links;
 	}
@@ -98,6 +114,8 @@ if ( !function_exists('bvWpEMigrate') ) :
 				<input type="hidden" name="secret" value="<?php echo $blogvault->getOption('bvSecretKey'); ?>">
 				<input type='hidden' name='bvnonce' value='<?php echo wp_create_nonce("bvnonce") ?>'>
 				<input type='hidden' name='serverip' value='<?php echo $_SERVER["SERVER_ADDR"] ?>'>
+				<input type='hidden' name='adminurl' value='<?php echo bvWPEAdminUrl(); ?>'>
+				<input type="hidden" name="multisite" value="<?php var_export($blogvault->isMultisite()); ?>" />
 				<div class="row-fluid">
 					<div class="span5" style="border-right: 1px solid #EEE; padding-top:1%;">
 						<label id='label_email'>Email</label>
