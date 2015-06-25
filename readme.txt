@@ -30,7 +30,7 @@ WP Engine Automated Migrations allows you to easily migrate your WordPress site 
 
 = Legal Requirements =
 
-* By using this plugin, you are agreeing the our [Terms of Service] (http://wpengine.com/TOS_NEEDS_TO_GO_HERE)
+* By using this plugin, you are agreeing the our [Terms of Service](http://wpengine.com/terms-of-service/)
 
 = * Please Note * =
 
