@@ -3,7 +3,7 @@ global $blogvault;
 global $bvNotice;
 global $bvWPEAdminPage;
 $bvNotice = '';
-$bvWPEAdminPage = 'bv-wpe-migrate';
+$bvWPEAdminPage = 'wpe-automated-migration';
 
 if (!function_exists('bvWPEAdminUrl')) :
 	function bvWPEAdminUrl($_params = '') {
@@ -94,7 +94,7 @@ if ( !function_exists('bvWpEMigrate') ) :
 			<a href="http://wpengine.com/"><img src="<?php echo plugins_url('wpengine-logo.png', __FILE__); ?>" /></a>
 		</div>
 
-		<div id="wrapper toplevel_page_bv-wpe-migrate">
+		<div id="wrapper toplevel_page_wpe-automated-migration">
 			<form dummy=">" action="https://webapp.blogvault.net/home/migrate" style="padding:0 2% 2em 1%;" method="post" name="signup">
 				<h1>Migrate Site to WP Engine</h1>
 				<p><font size="3">This plugin makes it very easy to migrate your site to WP Engine</font></p>
@@ -136,14 +136,14 @@ if ( !function_exists('bvWpEMigrate') ) :
 						</label>
 						<div class="control-group">
 							<div class="controls">
-								<input type="text" class="input-large" placeholder="eg. 1.2.3.4" name="address">
+								<input type="text" class="input-large" placeholder="ex. 123.456.789.101" name="address">
 								<p class="help-block"></p>
 							</div>
 						</div>
 						<label class="control-label" for="input01">SFTP Username</label>
 						<div class="control-group">
 							<div class="controls">
-								<input type="text" class="input-large" placeholder="eg. akshatc" name="username">
+								<input type="text" class="input-large" placeholder="ex. installname" name="username">
 								<p class="help-block"></p>
 							</div>
 						</div>
@@ -153,6 +153,35 @@ if ( !function_exists('bvWpEMigrate') ) :
 								<input type="password" class="input-large" name="passwd">
 							</div>
 						</div>
+<?php if ($_GET['auth_required_source']) { ?>
+						<label class="control-label" for="input02" style="color:red">Admin <small>(for this site)</small></label>
+						<div class="control-group">
+							<div class="controls">
+								<input type="text" class="input-large" name="admin_source">
+							</div>
+						</div>
+						<label class="control-label" for="input02" style="color:red">Password <small>(for this site)</small></label>
+						<div class="control-group">
+							<div class="controls">
+								<input type="password" class="input-large" name="password_source">
+							</div>
+						</div>
+<?php } ?>
+<?php if ($_GET['auth_required_dest']) { ?>
+            <label class="control-label" for="input02" style="color:red">Admin <small>(for wpengine destination site)</small></label>
+            <div class="control-group">
+              <div class="controls">
+                <input type="text" class="input-large" name="admin_dest">
+              </div>
+            </div>
+            <label class="control-label" for="input02" style="color:red">Password <small>(for wpengine destination site)</small></label>
+            <div class="control-group">
+              <div class="controls">
+                <input type="password" class="input-large" name="password_dest">
+              </div>
+            </div>
+<?php } ?>
+						<p style="font-size: 11px;">By presing the "Migrate" button, you are agreeing to <a href="http://wpengine.com/terms-of-service/">WP Engine's Terms of Service</a></p>
 					</div>
 				</div>
 				<input type='submit' value='Migrate'>
