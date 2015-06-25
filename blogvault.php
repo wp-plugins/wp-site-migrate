@@ -1,9 +1,9 @@
 <?php
 /*
-Plugin Name: BV WPEngine Migration
-Plugin URI: http://blogvault.net/
-Description: The easiest way to migrate your site to WPEngine
-Author: Akshat
+Plugin Name: WP Engine Automated Migrations
+Plugin URI: http://wpengine.com
+Description: The easiest way to migrate your site to WP Engine
+Author: WP Engine
 Author URI: http://blogvault.net/
 Version: 1.17
 Network: True

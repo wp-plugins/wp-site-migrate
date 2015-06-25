@@ -1,16 +1,16 @@
 
-.toplevel_page_bv-wpe-migrate label{
+.toplevel_page_wpe-automated-migration label{
 	float: left;
 	width: 220px;
 	font-weight: bold;
 	}
 
-.toplevel_page_bv-wpe-migrate input, .toplevel_page_bv-wpe-migrate textarea{
+.toplevel_page_wpe-automated-migration input, .toplevel_page_wpe-automated-migration textarea{
 	width: 180px;
 	margin-bottom: 20px;
 	}
 
-.toplevel_page_bv-wpe-migrate textarea{
+.toplevel_page_wpe-automated-migration textarea{
 	width: 250px;
 	height: 150px;
 	}
