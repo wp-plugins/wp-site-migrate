@@ -1,6 +1,6 @@
 <?php
 /*
-Plugin Name: WP Engine Automated Migrations
+Plugin Name: WP Engine Automated Migration
 Plugin URI: http://wpengine.com
 Description: The easiest way to migrate your site to WP Engine
 Author: WP Engine

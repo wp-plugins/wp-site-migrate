@@ -1,4 +1,4 @@
-=== WP Engine Automated Migrations ===
+=== WP Engine Automated Migration ===
 Contributors: wpengine, blogvault, akshatc
 Tags: wpe, wpengine, migration
 Requires at least: 3.0.1
