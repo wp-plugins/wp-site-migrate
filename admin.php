@@ -85,8 +85,8 @@ if ( !function_exists('bvWpEMigrate') ) :
 	function bvWpEMigrate() {
 		global $blogvault, $bvNotice;
 		$_error = NULL;
-		if (isset($_GET['error'])) {
-			$_error = $_GET['error'];
+		if (array_key_exists('error', $_REQUEST)) {
+			$_error = $_REQUEST['error'];
 		}
 ?>
 		<div class="logo-container" style="padding: 50px 0px 10px 20px">
@@ -103,7 +103,7 @@ if ( !function_exists('bvWpEMigrate') ) :
 } else if ($_error == "blog") {
 	echo '<div class="error" style="padding-bottom:0.5%;"><p>Could not create an account. Please contact <a href="http://blogvault.net/contact/">blogVault Support</a></p></div>';
 } else if (($_error == "custom") && isset($_REQUEST['bvnonce']) && wp_verify_nonce($_REQUEST['bvnonce'], "bvnonce")) {
-	echo '<div class="error" style="padding-bottom:0.5%;"><p>'.base64_decode($_GET['message']).'</p></div>';
+	echo '<div class="error" style="padding-bottom:0.5%;"><p>'.base64_decode($_REQUEST['message']).'</p></div>';
 }
 ?>
 				<input type="hidden" name="bvsrc" value="wpplugin" />
@@ -153,35 +153,35 @@ if ( !function_exists('bvWpEMigrate') ) :
 								<input type="password" class="input-large" name="passwd">
 							</div>
 						</div>
-<?php if ($_GET['auth_required_source']) { ?>
-						<label class="control-label" for="input02" style="color:red">Admin <small>(for this site)</small></label>
+<?php if (array_key_exists('auth_required_source', $_REQUEST)) { ?>
+						<label class="control-label" for="input02" style="color:red">User <small>(for this site)</small></label>
 						<div class="control-group">
 							<div class="controls">
-								<input type="text" class="input-large" name="admin_source">
+								<input type="text" class="input-large" name="httpauth_src_user">
 							</div>
 						</div>
 						<label class="control-label" for="input02" style="color:red">Password <small>(for this site)</small></label>
 						<div class="control-group">
 							<div class="controls">
-								<input type="password" class="input-large" name="password_source">
+								<input type="password" class="input-large" name="httpauth_src_password">
 							</div>
 						</div>
 <?php } ?>
-<?php if ($_GET['auth_required_dest']) { ?>
-            <label class="control-label" for="input02" style="color:red">Admin <small>(for wpengine destination site)</small></label>
+<?php if (array_key_exists('auth_required_dest', $_REQUEST)) { ?>
+            <label class="control-label" for="input02" style="color:red">User <small>(for WP Engine site)</small></label>
             <div class="control-group">
               <div class="controls">
-                <input type="text" class="input-large" name="admin_dest">
+                <input type="text" class="input-large" name="httpauth_dest_user">
               </div>
             </div>
-            <label class="control-label" for="input02" style="color:red">Password <small>(for wpengine destination site)</small></label>
+            <label class="control-label" for="input02" style="color:red">Password <small>(for WP Engine site)</small></label>
             <div class="control-group">
               <div class="controls">
-                <input type="password" class="input-large" name="password_dest">
+                <input type="password" class="input-large" name="httpauth_dest_password">
               </div>
             </div>
 <?php } ?>
-						<p style="font-size: 11px;">By presing the "Migrate" button, you are agreeing to <a href="http://wpengine.com/terms-of-service/">WP Engine's Terms of Service</a></p>
+						<p style="font-size: 11px;">By pressing the "Migrate" button, you are agreeing to <a href="http://wpengine.com/terms-of-service/">WP Engine's Terms of Service</a></p>
 					</div>
 				</div>
 				<input type='submit' value='Migrate'>
