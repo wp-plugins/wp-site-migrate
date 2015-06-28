@@ -168,13 +168,13 @@ if ( !function_exists('bvWpEMigrate') ) :
 						</div>
 <?php } ?>
 <?php if (array_key_exists('auth_required_dest', $_REQUEST)) { ?>
-            <label class="control-label" for="input02" style="color:red">User <small>(for WP Engine site)</small></label>
+            <label class="control-label" for="input02" style="color:red">Username <small>(for WP Engine Install)</small></label>
             <div class="control-group">
               <div class="controls">
                 <input type="text" class="input-large" name="httpauth_dest_user">
               </div>
             </div>
-            <label class="control-label" for="input02" style="color:red">Password <small>(for WP Engine site)</small></label>
+            <label class="control-label" for="input02" style="color:red">Password <small>(for WP Engine Install)</small></label>
             <div class="control-group">
               <div class="controls">
                 <input type="password" class="input-large" name="httpauth_dest_password">
