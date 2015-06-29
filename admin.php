@@ -190,52 +190,6 @@ if ( !function_exists('bvWpEMigrate') ) :
 				<h1>How to Use This Plugin</h1>
 				<iframe src="//fast.wistia.net/embed/iframe/0rrkl3w1vu?videoFoam=true" allowtransparency="true" frameborder="0" scrolling="no" class="wistia_embed" name="wistia_embed" allowfullscreen mozallowfullscreen webkitallowfullscreen oallowfullscreen msallowfullscreen width="500" height="313"></iframe><script src="//fast.wistia.net/assets/external/E-v1.js"></script>
 				<p><i>For full instructions and solutions to common errors, please visit our <a href="http://wpengine.com/support/wp-engine-automatic-migration/">WP Engine Automated Migration</a> support garage article.</i></p>
-				<p>In order to successfully move over to WP Engine using this plugin, you will need to find your <strong>SFTP Host</strong>, <strong>SFTP Username</strong>, and <strong>SFTP Password</strong>. We make this very easy to find!</p>
-				<p>In addition to that information, you will need to supply a valid email address and the WP Engine Site URL.</p>
-				<p>Please note, this plugin is best used along side our migration checklist. Our checklist will be able to provide invaluable information about what data to supply each field.</p>
-				<h2>Email</h2>
-				<p>This email is used for all communications during the migration process. Please make sure the email you submit is valid and that you have access to the account.</p>
-				<h2>WP Engine Site URL</h2>
-				<p>This represents the URL you want your site to be migrated too. </p>
-				<h3>Using WP Engine’s Temporary URL</h3>
-				<p>If you want to view the site on the WP Engine platform before pointing your domain to us, you will want to use WP Engine’s temporary URL for this field. To find your WP Engine Site URL, follow these steps:</p>
-				<ol><li>Log in to the WP Engine User Portal at my.wpengine.com.</li>
-				<li>Select the install that you want to move this site too.</li>
-				<li>Make note of the WP Engine URL labeled “CNAME”</li></ol>
-				<p>Here is a visual reference to find the WP Engine Site URL:<p/>
-				<img src="<?php echo plugins_url("quick-tut-1.jpg", __FILE__); ?>" />
-				<h3>Using Custom URL</h3>
-				<p>You may find yourself migrating your site to a different URL to WP Engine. For example, you may have been developing a site on your current host and want to launch it on WP Engine.</p>
-				<p>If this sounds like your project, the “WP Engine Site URL” field above should be populated with the domain you want your WP Engine site to live under.</p>
-				<p>For example, if you are currently hosting your site under <strong>mydomain-dev.com</strong> and you want your site to be migrated to work with the domain <strong>mydomain.com</strong>, “WP Engine Site URL” will be <strong>http://mydomain.com.</strong></p>
-				<h2>SFTP Host</h2>
-				<p>To find your SFTP Host, follow these steps:</p>
-				<ol><li>Log in to the WP Engine User Portal at my.wpengine.com.</li>
-				<li>Select the install that you want to move this site too.</li>
-				<li>Find the SFTP Login panel at the bottom.</li>
-				<li>The Server Address is your SFTP Host.</li></ol>
-				<p>Here is a visual reference to find the SFTP Host:</p>
-				<img src="<?php echo plugins_url("quick-tut-2.jpg", __FILE__); ?>" />
-				<h2>SFTP Username</h2>
-				<p>To find your SFTP Host, follow these steps:</p>
-				<ol><li>Log in to the WP Engine User Portal at my.wpengine.com.</li>
-				<li>Select the install that you want to move this site too.</li>
-				<li>Find the SFTP Login panel at the bottom.</li>
-				<li>You will find the Username under the Server Address.</li></ol>
-				
-				<strong>Note: Make sure the username you select has the environment “Live” selected</strong>
-				<p>Here is a visual reference to find the SFTP Username:</p>
-				<img src="<?php echo plugins_url("quick-tut-3.jpg", __FILE__); ?>" />
-				<h2>SFTP Password</h2>
-				<p>To find your SFTP Password, follow these steps:</p>
-				<ol><li>Log in to the WP Engine User Portal at my.wpengine.com.</li>
-				<li>Select the install that you want to move this site too.</li>
-				<li>Find the SFTP Login panel at the bottom.</li>
-				<li>Click the Username you are using for the migration.</li>
-				<img src="<?php echo plugins_url("quick-tut-4.jpg", __FILE__); ?>" />
-				<li>A new screen should pop up for you to change your password. Change the password, confirm the password and save it to our server. Note that the Environment should be set to “Production”, which is your live environment.</li>
-				<img src="<?php echo plugins_url("quick-tut-5.jpg", __FILE__); ?>" />
-				</ol>
 			</div>
 		</div> <!-- wrapper ends here -->
 <?php
