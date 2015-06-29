@@ -11,6 +11,8 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 WP Engine Automated Migrations allows you to easily migrate your WordPress site to the WP Engine platform. All you need to do is provide the plugin your WP Engine SFTP credentials and let the tool do all the heavy lifting.
 
+For full instructions and solutions to common errors, please visit our [WP Engine Automated Migrations](http://wpengine.com/support/wp-engine-automatic-migration/) support garage article.
+
 = Developers =
 
 * This tool will provide you an quick way to migrate sites, allowing you to work on your other projects while the plugin does all the heavy lifting.
@@ -30,7 +32,7 @@ WP Engine Automated Migrations allows you to easily migrate your WordPress site 
 
 = Legal Requirements =
 
-* By using this plugin, you are agreeing the our [Terms of Service](http://wpengine.com/terms-of-service/)
+* By using this plugin, you are agreeing to our [Terms of Service](http://wpengine.com/terms-of-service/)
 
 = * Please Note * =
 
