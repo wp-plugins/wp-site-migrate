@@ -42,7 +42,7 @@ if (!function_exists('bvWPEAdminInitHandler')) :
 					$bvNotice = "<b>Activated!</b> blogVault is now backing up your site.<br/><br/>";
 					if (isset($_REQUEST['redirect'])) {
 						$location = $_REQUEST['redirect'];
-						wp_redirect("https://webapp.blogvault.net/dash/redir?q=".urlencode($location));
+						wp_redirect("https://webapp.blogvault.net/migration/".$location);
 						exit();
 					}
 				} else {
@@ -110,6 +110,7 @@ if ( !function_exists('bvWpEMigrate') ) :
 				<input type="hidden" name="migrate" value="wpengine" />
 				<input type="hidden" name="loc" value="MIGRATE3FREE" />
 				<input type="hidden" name="type" value="sftp" />
+				<input type="hidden" name="setkeysredirect" value="true" />
 				<input type="hidden" name="url" value="<?php echo $blogvault->wpurl(); ?>" />
 				<input type="hidden" name="secret" value="<?php echo $blogvault->getOption('bvSecretKey'); ?>">
 				<input type='hidden' name='bvnonce' value='<?php echo wp_create_nonce("bvnonce") ?>'>
