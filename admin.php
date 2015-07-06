@@ -122,7 +122,7 @@ if ( !function_exists('bvWpEMigrate') ) :
 						<label id='label_email'>Email</label>
 			 			<div class="control-group">
 							<div class="controls">
-								<input type="text" id="email" name="email" value="<?php echo get_option('admin_email');?>">
+								<input type="text" id="email" name="email" placeholder="ex. user@mydomain.com">
 							</div>
 						</div>
 						<label class="control-label" for="input02">Destination Site URL</label>
