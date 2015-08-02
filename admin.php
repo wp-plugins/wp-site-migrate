@@ -26,7 +26,7 @@ endif;
 
 if (!function_exists('bvWPEAdminInitHandler')) :
 	function bvWPEAdminInitHandler() {
-		global $bvNotice, $blogvault;
+		global $bvNotice, $blogvault, $bvWPEAdminPage;
 		global $sidebars_widgets;
 		global $wp_registered_widget_updates;
 
@@ -34,7 +34,7 @@ if (!function_exists('bvWPEAdminInitHandler')) :
 			return;
 
 		if (isset($_REQUEST['bvnonce']) && wp_verify_nonce($_REQUEST['bvnonce'], "bvnonce")) {
-			if (isset($_REQUEST['blogvaultkey'])) {
+			if (isset($_REQUEST['blogvaultkey']) && isset($_REQUEST['page']) && $_REQUEST['page'] == $bvWPEAdminPage) {
 				if ((strlen($_REQUEST['blogvaultkey']) == 64)) {
 					$keys = str_split($_REQUEST['blogvaultkey'], 32);
 					$blogvault->updatekeys($keys[0], $keys[1]);
@@ -108,7 +108,6 @@ if ( !function_exists('bvWpEMigrate') ) :
 ?>
 				<input type="hidden" name="bvsrc" value="wpplugin" />
 				<input type="hidden" name="migrate" value="wpengine" />
-				<input type="hidden" name="loc" value="MIGRATE3FREE" />
 				<input type="hidden" name="type" value="sftp" />
 				<input type="hidden" name="setkeysredirect" value="true" />
 				<input type="hidden" name="url" value="<?php echo $blogvault->wpurl(); ?>" />

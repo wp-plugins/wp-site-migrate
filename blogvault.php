@@ -261,6 +261,7 @@ if ((array_key_exists('apipage', $_REQUEST)) && stristr($_REQUEST['apipage'], 'b
 				'dbversion' => $wp_db_version,
 				'abspath' => ABSPATH,
 				'uploadpath' => $blogvault->uploadPath(),
+				'uploaddir' => wp_upload_dir(),
 				'contentdir' => defined('WP_CONTENT_DIR') ? WP_CONTENT_DIR : null,
 				'plugindir' => defined('WP_PLUGIN_DIR') ? WP_PLUGIN_DIR : null,
 				'dbcharset' => defined('DB_CHARSET') ? DB_CHARSET : null,
