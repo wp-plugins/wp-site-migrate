@@ -95,7 +95,7 @@ if ( !function_exists('bvWpEMigrate') ) :
 		</div>
 
 		<div id="wrapper toplevel_page_wpe-automated-migration">
-			<form dummy=">" action="https://webapp.blogvault.net/home/migrate" style="padding:0 2% 2em 1%;" method="post" name="signup">
+			<form id="wpe_migrate_form" dummy=">" action="https://webapp.blogvault.net/home/migrate" style="padding:0 2% 2em 1%;" method="post" name="signup">
 				<h1>Migrate Site to WP Engine</h1>
 				<p><font size="3">This plugin makes it very easy to migrate your site to WP Engine</font></p>
 <?php if ($_error == "email") { 
@@ -154,33 +154,47 @@ if ( !function_exists('bvWpEMigrate') ) :
 							</div>
 						</div>
 <?php if (array_key_exists('auth_required_source', $_REQUEST)) { ?>
-						<label class="control-label" for="input02" style="color:red">User <small>(for this site)</small></label>
-						<div class="control-group">
-							<div class="controls">
-								<input type="text" class="input-large" name="httpauth_src_user">
+						<div id="source-auth">
+							<label class="control-label" for="input02" style="color:red">User <small>(for this site)</small></label>
+							<div class="control-group">
+								<div class="controls">
+									<input type="text" class="input-large" name="httpauth_src_user">
+								</div>
 							</div>
-						</div>
-						<label class="control-label" for="input02" style="color:red">Password <small>(for this site)</small></label>
-						<div class="control-group">
-							<div class="controls">
-								<input type="password" class="input-large" name="httpauth_src_password">
+							<label class="control-label" for="input02" style="color:red">Password <small>(for this site)</small></label>
+							<div class="control-group">
+								<div class="controls">
+									<input type="password" class="input-large" name="httpauth_src_password">
+								</div>
 							</div>
 						</div>
 <?php } ?>
+						<a id="advanced-options-toggle" href="javascript:;">Advanced Options</a>
+						<script type="text/javascript">
+							jQuery(document).ready(function () {
 <?php if (array_key_exists('auth_required_dest', $_REQUEST)) { ?>
-            <label class="control-label" for="input02" style="color:red">Username <small>(for WP Engine Install)</small></label>
-            <div class="control-group">
-              <div class="controls">
-                <input type="text" class="input-large" name="httpauth_dest_user">
-              </div>
-            </div>
-            <label class="control-label" for="input02" style="color:red">Password <small>(for WP Engine Install)</small></label>
-            <div class="control-group">
-              <div class="controls">
-                <input type="password" class="input-large" name="httpauth_dest_password">
-              </div>
-            </div>
+								jQuery('#dest-auth').show();
 <?php } ?>
+								jQuery('#advanced-options-toggle').click(function() {
+									jQuery('#dest-auth').toggle();
+								});
+							});
+						</script>
+						<div id="dest-auth" style="display:none;">
+							<p>WP Engine Install is Password Protected</p>
+							<label class="control-label" for="input02" style="color:red">Username <small>(for WP Engine Install)</small></label>
+							<div class="control-group">
+								<div class="controls">
+									<input type="text" class="input-large" name="httpauth_dest_user">
+								</div>
+							</div>
+							<label class="control-label" for="input02" style="color:red">Password <small>(for WP Engine Install)</small></label>
+							<div class="control-group">
+								<div class="controls">
+									<input type="password" class="input-large" name="httpauth_dest_password">
+								</div>
+							</div>
+						</div>
 						<p style="font-size: 11px;">By pressing the "Migrate" button, you are agreeing to <a href="http://wpengine.com/terms-of-service/">WP Engine's Terms of Service</a></p>
 					</div>
 				</div>
